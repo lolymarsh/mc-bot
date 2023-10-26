@@ -12,7 +12,8 @@ const {
   Movements,
   goals: { GoalNear },
 } = require("mineflayer-pathfinder");
-const command = require("./command/pathfinder");
+const { Vec3 } = require("vec3");
+
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 
@@ -78,7 +79,84 @@ app.post("/farm-pumpkin", (req, res) => {
     });
   }
 });
-// FarmPumpkin]
+// FarmPumpkin
+
+// FarmWheat
+let isFarmWheatEnabled = false;
+app.post("/farm-wheat", (req, res) => {
+  if (isFarmWheatEnabled) {
+    isFarmWheatEnabled = false;
+    autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
+    // loop();
+    return res.status(200).json({
+      message: "FarmWheat",
+      status: isFarmWheatEnabled,
+    });
+  } else {
+    isFarmWheatEnabled = true;
+    autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
+    // loop();
+    return res.status(200).json({
+      message: "FarmWheat",
+      status: isFarmWheatEnabled,
+    });
+  }
+});
+
+function blockToSow() {
+  return bot.findBlock({
+    point: bot.entity.position,
+    matching: bot.registry.blocksByName.farmland.id,
+    maxDistance: 6,
+    useExtraInfo: (block) => {
+      const blockAbove = bot.blockAt(block.position.offset(0, 1, 0));
+      return !blockAbove || blockAbove.type === 0;
+    },
+  });
+}
+
+function blockToHarvest() {
+  return bot.findBlock({
+    point: bot.entity.position,
+    maxDistance: 6,
+    matching: (block) => {
+      return (
+        block &&
+        block.type === bot.registry.blocksByName.wheat.id &&
+        block.metadata === 7
+      );
+    },
+  });
+}
+
+async function loop() {
+  try {
+    while (1) {
+      const toHarvest = blockToHarvest();
+      if (toHarvest) {
+        await bot.dig(toHarvest);
+      } else {
+        break;
+      }
+    }
+    while (1) {
+      const toSow = blockToSow();
+      if (toSow) {
+        await bot.equip(bot.registry.itemsByName.wheat_seeds.id, "hand");
+        await bot.placeBlock(toSow, new Vec3(0, 1, 0));
+      } else {
+        break;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+
+  // No block to harvest or sow. Postpone next loop a bit
+  setTimeout(loop, 5000);
+}
+
+// FarmWheat
 
 // Command to bot
 app.post("/command", (req, res) => {

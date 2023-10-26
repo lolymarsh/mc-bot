@@ -36,6 +36,13 @@
           chatMessageFarmPumpkin.textContent = message;
           chatFarmPumpkin.appendChild(chatMessageFarmPumpkin);
         });
+
+        socket.on("chat-farm-wheat", (message) => {
+          const chatFarmWheat = document.getElementById("chat-wheat");
+          const chatMessageFarmWheat = document.createElement("p");
+          chatMessageFarmWheat.textContent = message;
+          chatFarmWheat.appendChild(chatMessageFarmWheat);
+        });
       },
       sendCommand: async function () {
         try {
@@ -189,6 +196,24 @@
           self.isEnabled = !self.isEnabled;
           self.farmMode = "pumpkin_farm";
           const response = await fetch(`${apiPath}farm-pumpkin`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      ToggleFarmWheat: async function () {
+        try {
+          const self = this;
+          self.isEnabled = !self.isEnabled;
+          self.farmMode = "wheat_farm";
+          const response = await fetch(`${apiPath}farm-wheat`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -153,14 +153,14 @@
               <button
                 v-if="isEnabled == false"
                 class="btn btn-primary"
-                @click="isEnabled = true"
+                @click="ToggleFarmWheat()"
               >
                 เปิดใช้งานฟาร์ม Wheat
               </button>
               <button
                 v-if="isEnabled == true && farmMode == 'wheat_farm'"
                 class="btn btn-primary"
-                @click="isEnabled = false"
+                @click="ToggleFarmWheat()"
               >
                 ปิดใช้งานฟาร์ม Wheat
               </button>
@@ -168,7 +168,10 @@
           </div>
         </div>
         <!-- FarmPumpkin -->
-        <div v-if="isEnabled == true" class="mt-2">
+        <div
+          v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
+          class="mt-2"
+        >
           <h1 class="text-center">Pumpkin Chat</h1>
           <div
             id="chat-pumpkin"
@@ -176,10 +179,10 @@
             style="max-height: 300px; overflow-y: auto"
           ></div>
         </div>
-        <div v-if="farmMode == true && farmMode == 'wheat_farm'" class="mt-5">
-          <h1 class="text-center">Pumpkin Chat</h1>
+        <div v-if="isEnabled == true && farmMode == 'wheat_farm'" class="mt-5">
+          <h1 class="text-center">Wheat Chat</h1>
           <div
-            id="chat-pumpkin"
+            id="chat-wheat"
             class="mt-3 card bg-secondary p-3"
             style="max-height: 300px; overflow-y: auto"
           ></div>
