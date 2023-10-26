@@ -97,6 +97,82 @@
         console.log(self.showInventory);
         self.showInventory = "inactive";
       },
+      ItemToHand: async function (nameItem) {
+        try {
+          const response = await fetch(`${apiPath}hold-item`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: nameItem,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      dropItem: async function (nameItem, quantity) {
+        try {
+          const response = await fetch(`${apiPath}drop-item`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: nameItem,
+              count: quantity,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      showModalSwal(item) {
+        const self = this;
+
+        Swal.fire({
+          title: "กรุณากรอกข้อมูล",
+          html: `
+        <div class="swal-content">
+            <input id="name" class="swal2-input" placeholder="ชื่อ" disabled value="${item.name}">
+            <input id="quantity" type="number" class="swal2-input" placeholder="จำนวน" value="${item.stackSize}">
+        </div>
+    `,
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const name = document.getElementById("name").value;
+            const quantityInput = document.getElementById("quantity");
+            const quantity = quantityInput.value;
+
+            // ตรวจสอบว่าค่าจำนวนเกินค่า stackSize หรือไม่
+            if (quantity > item.stackSize) {
+              Swal.fire({
+                icon: "error",
+                title: "ข้อผิดพลาด",
+                text: "คุณกรอกจำนวนเกินค่าที่มี",
+              });
+            } else {
+              self.dropItem(name, quantity);
+              Swal.fire({
+                icon: "success",
+                title: "โยนไอเทมสำเร็จ",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }
+          }
+        });
+      },
     },
     mounted: async function () {
       const self = this;

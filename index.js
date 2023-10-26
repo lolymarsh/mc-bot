@@ -119,6 +119,7 @@ app.post("/armory-join", (req, res) => {
 app.post("/check-inventory", (req, res) => {
   const inventory = bot.inventory.items();
   const result = inventory.map((item) => ({
+    name: item.name,
     displayName: item.displayName,
     stackSize: item.stackSize,
     slot: item.slot,
@@ -131,4 +132,43 @@ app.post("/check-inventory", (req, res) => {
     datas: result,
   });
 });
-// Active Item
+// Check Inventory
+
+// Hold Item
+app.post("/hold-item", async (req, res) => {
+  const { name } = req.body;
+  try {
+    // const ite555m = bot.registry.itemsByName[name].id;
+    await bot.equip(bot.registry.itemsByName[name].id, "hand");
+    return res.status(200).json({
+      message: "Hold Item",
+      status: true,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(200).json({
+      message: "Hold Item",
+      status: false,
+    });
+  }
+});
+// Hold Item
+
+// Hold Item
+app.post("/drop-item", async (req, res) => {
+  const { name, count } = req.body;
+  try {
+    bot.toss(bot.registry.itemsByName[name].id, null, count);
+    return res.status(200).json({
+      message: "Drop Item",
+      status: true,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(200).json({
+      message: "Drop Item",
+      status: false,
+    });
+  }
+});
+// Hold Item
