@@ -40,6 +40,38 @@
             class="mt-3 card bg-light p-3"
             style="max-height: 300px; overflow-y: auto"
           ></div>
+          <button
+            v-if="showInventory !== 'active'"
+            class="btn btn-primary mt-2"
+            @click="checkInventory()"
+          >
+            เช็คของในตัวบอท
+          </button>
+          <button
+            v-if="showInventory === 'active'"
+            class="btn btn-primary mt-2"
+            @click="clickHideInventory()"
+          >
+            ซ่อนไอเทม
+          </button>
+          <div
+            class="card bg-light p-3 mt-2"
+            v-if="showInventory === 'active' && dataInventory.length > 0"
+          >
+            <div v-for="item in dataInventory">
+              <div class="row">
+                <div class="col-md-6">
+                  <p
+                    v-text="'ชื่อ ' + item.displayName +' จำนวน ' + item.stackSize + ' ชิ้น'"
+                  ></p>
+                  <p v-text="' ช่อง ' + item.slot"></p>
+                </div>
+                <div class="col-md-6 text-end">
+                  <button class="btn btn-primary">ถือของ</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="mt-5">
           <h1 class="text-center">Option</h1>

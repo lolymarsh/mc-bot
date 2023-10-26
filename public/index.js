@@ -8,9 +8,11 @@
       return {
         ws: null,
         message: "",
-        x_pos: 0,
-        y_pos: 0,
-        z_pos: 0,
+        x_pos: "",
+        y_pos: "",
+        z_pos: "",
+        showInventory: "inactive",
+        dataInventory: [],
       };
     },
     methods: {
@@ -58,13 +60,42 @@
               z_pos: self.z_pos,
             }),
           });
-
+          self.x_pos = "";
+          self.y_pos = "";
+          self.z_pos = "";
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
         } catch (error) {
           console.log(error);
         }
+      },
+      checkInventory: async function () {
+        try {
+          const self = this;
+          const response = await fetch(`${apiPath}check-inventory`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          self.dataInventory = data?.datas;
+
+          self.showInventory = "active";
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      clickHideInventory: function () {
+        const self = this;
+        console.log(self.showInventory);
+        self.showInventory = "inactive";
       },
     },
     mounted: async function () {

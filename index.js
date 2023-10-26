@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
@@ -26,22 +27,21 @@ app.get("/", (req, res) => {
 });
 
 const bot = mineflayer.createBot({
-  host: "0.0.0.0",
-  username: "lolykung",
-  port: "55555",
+  host: process.env.HOST_SERVER,
+  username: process.env.BOT_NAME,
+  port: process.env.PORT_SERVER || "",
   auth: "offline",
 });
 
 bot.loadPlugin(pathfinder);
 
 bot.once("spawn", () => {
-  command.goToPlayer(bot);
-  command.goToPos(bot);
+  // command.goToPos(bot);
 });
 
 bot.on("messagestr", (message) => {
   console.log(message);
-  io.emit("chat-message", message); // ส่งข้อมูลไปยังห้อง Socket.io
+  io.emit("chat-message", message);
 });
 bot.on("kicked", console.log);
 bot.on("error", console.log);
@@ -87,3 +87,48 @@ app.post("/send-pos", (req, res) => {
   });
 });
 // Position TO GO
+
+// Active Item
+app.post("/armory-join", (req, res) => {
+  bot.activateItem();
+  bot.on("windowOpen", async (window) => {
+    if (window.type === "minecraft:generic_9x6") {
+      // console.log("Inventory 9x6 opened");
+      // for (let i = 0; i < window.slots.length; i++) {
+      //   const slot = window.slots[i];
+      //   if (slot) {
+      //     console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
+      //     if (slot.nbt) {
+      //       console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
+      //     }
+      //   }
+      // }
+      await bot.clickWindow(15, 0, 0);
+      await bot.clickWindow(16, 0, 0);
+      await bot.clickWindow(17, 0, 0);
+    }
+  });
+  return res.status(200).json({
+    message: "Active Item",
+    status: true,
+  });
+});
+// Active Item
+
+// Check Inventory
+app.post("/check-inventory", (req, res) => {
+  const inventory = bot.inventory.items();
+  const result = inventory.map((item) => ({
+    displayName: item.displayName,
+    stackSize: item.stackSize,
+    slot: item.slot,
+  }));
+
+  // console.log(result);
+  return res.status(200).json({
+    message: "Check Inven",
+    status: true,
+    datas: result,
+  });
+});
+// Active Item
