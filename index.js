@@ -16,6 +16,7 @@ const { Vec3 } = require("vec3");
 
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
+const commandbasic = require("./command/pathfinder");
 
 server.listen(3000, () => {
   console.log("listening on *:3000");
@@ -32,7 +33,7 @@ const createBot = () => {
     const bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
-      port: process.env.PORT_SERVER || "",
+      // port: process.env.PORT_SERVER || "",
       auth: "offline",
     });
 
@@ -49,8 +50,9 @@ const createBot = () => {
 
 bot = createBot();
 
-bot.once("spawn", () => {
-  // command.goToPos(bot);
+bot.once("resourcePack", () => {
+  console.log("Resource pack accepted.");
+  bot.acceptResourcePack();
 });
 
 bot.on("messagestr", (message) => {
@@ -178,6 +180,21 @@ app.post("/send-pos", (req, res) => {
   });
 });
 // Position TO GO
+
+// Position-user
+app.post("/follow-user", (req, res) => {
+  try {
+    const { user } = req.body;
+    commandbasic.goToPlayer(bot, user);
+    return res.status(200).json({
+      message: "Follow User",
+      status: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+// Position-user
 
 // Join to survival
 app.post("/amory-join", (req, res) => {
