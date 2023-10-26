@@ -50,7 +50,7 @@ const createBot = () => {
 
 bot = createBot();
 
-bot.once("resourcePack", () => {
+bot.on("resourcePack", () => {
   console.log("Resource pack accepted.");
   bot.acceptResourcePack();
 });
@@ -59,8 +59,14 @@ bot.on("messagestr", (message) => {
   console.log(message);
   io.emit("chat-message", message);
 });
-bot.on("kicked", console.log);
-bot.on("error", console.log);
+bot.on("kicked", (message) => {
+  console.log(message);
+  io.emit("chat-message", message);
+});
+bot.on("error", (message) => {
+  console.log(message);
+  io.emit("chat-message", message);
+});
 
 // FarmPumpkin
 let isFarmPumpkinEnabled = false;
