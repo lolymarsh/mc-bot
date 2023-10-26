@@ -148,13 +148,12 @@
           showCancelButton: true,
           confirmButtonText: "ตกลง",
           cancelButtonText: "ยกเลิก",
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
-            const self = this;
             const name = document.getElementById("name").value;
             const quantityInput = document.getElementById("quantity");
             const quantity = quantityInput.value;
-            self.checkInventory();
+
             // ตรวจสอบว่าค่าจำนวนเกินค่า stackSize หรือไม่
             if (quantity > item.stackSize) {
               Swal.fire({
@@ -163,7 +162,8 @@
                 text: "คุณกรอกจำนวนเกินค่าที่มี",
               });
             } else {
-              self.dropItem(name, quantity);
+              await self.dropItem(name, quantity);
+              await self.checkInventory();
               Swal.fire({
                 icon: "success",
                 title: "โยนไอเทมสำเร็จ",
