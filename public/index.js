@@ -201,6 +201,21 @@
           console.log(error);
         }
       },
+      gotoSurvivalAmorycraft: async function () {
+        try {
+          const response = await fetch(`${apiPath}amory-join`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
     },
     mounted: async function () {
       const self = this;

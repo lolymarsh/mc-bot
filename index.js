@@ -101,8 +101,8 @@ app.post("/send-pos", (req, res) => {
 });
 // Position TO GO
 
-// Active Item
-app.post("/armory-join", (req, res) => {
+// Join to survival
+app.post("/amory-join", (req, res) => {
   bot.activateItem();
   bot.on("windowOpen", async (window) => {
     if (window.type === "minecraft:generic_9x6") {
@@ -122,11 +122,11 @@ app.post("/armory-join", (req, res) => {
     }
   });
   return res.status(200).json({
-    message: "Active Item",
+    message: "Join to survival",
     status: true,
   });
 });
-// Active Item
+// Join to survival
 
 // Check Inventory
 app.post("/check-inventory", (req, res) => {

@@ -89,7 +89,13 @@
         <div class="mt-2">
           <h1 class="text-center mb-3">Option</h1>
           <div class="card bg-secondary p-3">
-            <h1 class="text-start">ส่งคำสั่งหรือส่งแชท</h1>
+            <h1 class="text-start">หลังจากเข้าสู่ระบบ</h1>
+            <div class="input-group">
+              <button class="btn btn-primary" @click="gotoSurvivalAmorycraft()">
+                เข้า Survival ของ Armorycraft
+              </button>
+            </div>
+            <h1 class="text-start mt-2">ส่งคำสั่งหรือส่งแชท</h1>
             <div class="input-group">
               <input
                 v-model="message"
@@ -101,7 +107,7 @@
                 ส่งคำสั่ง
               </button>
             </div>
-            <h1 class="text-start">ส่งตำแหน่งให้บอทเดิน</h1>
+            <h1 class="text-start mt-2">ส่งตำแหน่งให้บอทเดิน</h1>
             <div class="input-group">
               <input
                 v-model="x_pos"
