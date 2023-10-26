@@ -188,6 +188,15 @@
           const self = this;
           self.isEnabled = !self.isEnabled;
           self.farmMode = "pumpkin_farm";
+          const response = await fetch(`${apiPath}farm-pumpkin`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
         } catch (error) {
           console.log(error);
         }
