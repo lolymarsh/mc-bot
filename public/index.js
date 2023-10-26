@@ -150,10 +150,11 @@
           cancelButtonText: "ยกเลิก",
         }).then((result) => {
           if (result.isConfirmed) {
+            const self = this;
             const name = document.getElementById("name").value;
             const quantityInput = document.getElementById("quantity");
             const quantity = quantityInput.value;
-
+            self.checkInventory();
             // ตรวจสอบว่าค่าจำนวนเกินค่า stackSize หรือไม่
             if (quantity > item.stackSize) {
               Swal.fire({
