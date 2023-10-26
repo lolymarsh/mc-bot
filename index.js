@@ -26,14 +26,27 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html"); // แก้ไขที่อยู่ไฟล์
 });
 
-const bot = mineflayer.createBot({
-  host: process.env.HOST_SERVER,
-  username: process.env.BOT_NAME,
-  port: process.env.PORT_SERVER || "",
-  auth: "offline",
-});
+const createBot = () => {
+  try {
+    const bot = mineflayer.createBot({
+      host: process.env.HOST_SERVER,
+      username: process.env.BOT_NAME,
+      port: process.env.PORT_SERVER || "",
+      auth: "offline",
+    });
 
-bot.loadPlugin(pathfinder);
+    bot.on("error", (err) => console.log(err));
+    bot.on("end", createBot);
+    bot.loadPlugin(pathfinder);
+
+    return bot;
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
+bot = createBot();
 
 bot.once("spawn", () => {
   // command.goToPos(bot);
@@ -51,14 +64,14 @@ let isFarmPumpkinEnabled = false;
 app.post("/farm-pumpkin", (req, res) => {
   if (isFarmPumpkinEnabled) {
     isFarmPumpkinEnabled = false;
-    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled);
+    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
     return res.status(200).json({
       message: "FarmPumpkin",
       status: isFarmPumpkinEnabled,
     });
   } else {
     isFarmPumpkinEnabled = true;
-    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled);
+    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
     return res.status(200).json({
       message: "FarmPumpkin",
       status: isFarmPumpkinEnabled,
@@ -138,7 +151,6 @@ app.post("/check-inventory", (req, res) => {
 app.post("/hold-item", async (req, res) => {
   const { name } = req.body;
   try {
-    // const ite555m = bot.registry.itemsByName[name].id;
     await bot.equip(bot.registry.itemsByName[name].id, "hand");
     return res.status(200).json({
       message: "Hold Item",

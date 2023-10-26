@@ -13,6 +13,8 @@
         z_pos: "",
         showInventory: "inactive",
         dataInventory: [],
+        farmMode: "",
+        isEnabled: false,
       };
     },
     methods: {
@@ -26,6 +28,13 @@
           const chatMessage = document.createElement("p");
           chatMessage.textContent = message; // ใช้ textContent เพื่อแสดงข้อความเท่านั้น
           chatBox.appendChild(chatMessage);
+        });
+
+        socket.on("chat-farm-pumpkin", (message) => {
+          const chatFarmPumpkin = document.getElementById("chat-pumpkin");
+          const chatMessageFarmPumpkin = document.createElement("p");
+          chatMessageFarmPumpkin.textContent = message;
+          chatFarmPumpkin.appendChild(chatMessageFarmPumpkin);
         });
       },
       sendCommand: async function () {
@@ -173,6 +182,15 @@
             }
           }
         });
+      },
+      ToggleFarmPumpkin: async function () {
+        try {
+          const self = this;
+          self.isEnabled = !self.isEnabled;
+          self.farmMode = "pumpkin_farm";
+        } catch (error) {
+          console.log(error);
+        }
       },
     },
     mounted: async function () {

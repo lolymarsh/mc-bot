@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebSocket</title>
+    <title>Minecraft</title>
+
     <!-- FONT -->
     <style>
       @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@1,9..40,100&family=Kanit:wght@300;400;500;600;700&display=swap");
+      * {
+        font-family: "Kanit", sans-serif;
+      }
     </style>
     <!-- FONT -->
     <!-- VUE V3 -->
@@ -36,10 +40,10 @@
     <div id="kt_app_root">
       <div class="container">
         <div class="mt-5">
-          <h1 class="text-center">Read-Only Chat</h1>
+          <h1 class="text-center">Chat Server</h1>
           <div
             id="chat-box"
-            class="mt-3 card bg-light p-3"
+            class="card bg-secondary p-3"
             style="max-height: 300px; overflow-y: auto"
           ></div>
           <button
@@ -57,7 +61,7 @@
             ซ่อนไอเทม
           </button>
           <div
-            class="card bg-light p-3 mt-2"
+            class="card bg-secondary p-3 mt-2"
             v-if="showInventory === 'active' && dataInventory.length > 0"
           >
             <div v-for="item in dataInventory">
@@ -84,9 +88,9 @@
         </div>
         <div class="mt-5">
           <h1 class="text-center">Option</h1>
-          <div class="mt-3 card bg-light p-3">
+          <div class="card bg-secondary p-3">
             <h1 class="text-start">ส่งคำสั่งหรือส่งแชท</h1>
-            <div class="input-group mt-3">
+            <div class="input-group">
               <input
                 v-model="message"
                 type="text"
@@ -98,7 +102,7 @@
               </button>
             </div>
             <h1 class="text-start">ส่งตำแหน่งให้บอทเดิน</h1>
-            <div class="input-group mt-3">
+            <div class="input-group">
               <input
                 v-model="x_pos"
                 type="number"
@@ -117,67 +121,66 @@
                 class="form-control"
                 placeholder="ตำแหน่ง Z"
               />
-              <button class="btn btn-primary" @click="sendPosition()">
-                ส่งตำแหน่ง
+              <div>
+                <button class="btn btn-primary" @click="sendPosition()">
+                  ส่งตำแหน่ง
+                </button>
+              </div>
+            </div>
+            <!-- Button -->
+            <div class="mt-2">
+              <h1 class="text-start">ออโต้ฟาร์ม</h1>
+              <button
+                v-if="isEnabled == false"
+                class="btn btn-primary"
+                @click="ToggleFarmPumpkin()"
+              >
+                เปิดใช้งานฟาร์ม Pumpkin
+              </button>
+              <button
+                v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
+                class="btn btn-primary"
+                @click="ToggleFarmPumpkin()"
+              >
+                ปิดใช้งานฟาร์ม Pumpkin
+              </button>
+              <button
+                v-if="isEnabled == false"
+                class="btn btn-primary"
+                @click="isEnabled = true"
+              >
+                เปิดใช้งานฟาร์ม Wheat
+              </button>
+              <button
+                v-if="isEnabled == true && farmMode == 'wheat_farm'"
+                class="btn btn-primary"
+                @click="isEnabled = false"
+              >
+                ปิดใช้งานฟาร์ม Wheat
               </button>
             </div>
           </div>
+        </div>
+        <!-- FarmPumpkin -->
+        <div v-if="isEnabled == true" class="mt-5">
+          <h1 class="text-center">Pumpkin Chat</h1>
+          <div
+            id="chat-pumpkin"
+            class="mt-3 card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
+        </div>
+        <div v-if="farmMode == true && farmMode == 'wheat_farm'" class="mt-5">
+          <h1 class="text-center">Pumpkin Chat</h1>
+          <div
+            id="chat-pumpkin"
+            class="mt-3 card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
         </div>
       </div>
       <!-- Modal -->
 
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="form-group">
-                  <label for="recipient-name" class="col-form-label"
-                    >Recipient:</label
-                  >
-                  <input type="text" class="form-control" id="recipient-name" />
-                </div>
-                <div class="form-group">
-                  <label for="message-text" class="col-form-label"
-                    >Message:</label
-                  >
-                  <textarea class="form-control" id="message-text"></textarea>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" class="btn btn-primary">
-                Send message
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Modal -->
     </div>
     <script

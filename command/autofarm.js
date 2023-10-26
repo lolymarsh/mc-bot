@@ -3,10 +3,28 @@ const {
   goals: { GoalNear },
 } = require("mineflayer-pathfinder");
 
+const itemByName = (nameitem) => {
+  const items = bot.inventory.items();
+  const result = items.map((item) => ({
+    name: item.name,
+    displayName: item.displayName,
+    stackSize: item.stackSize,
+    slot: item.slot,
+  }));
+  return result.filter((item) => item.name === nameitem)[0];
+};
+
 let FarmPumpkininterval;
-const FarmPumpkin = (bot, enable) => {
+let FarmWheatinterval;
+const FarmPumpkin = (bot, enable, io) => {
   if (enable) {
     FarmPumpkininterval = setInterval(async () => {
+      const finditem = itemByName("diamond_axe");
+      if (finditem) {
+        await bot.equip(bot.registry.itemsByName.diamond_axe.id, "hand");
+      } else {
+        console.log("ไม่พบขวานเพรช");
+      }
       await bot.waitForChunksToLoad();
       const name = "pumpkin";
       const ids = [bot.registry.blocksByName[name].id];
@@ -14,7 +32,7 @@ const FarmPumpkin = (bot, enable) => {
       const startTime = performance.now();
       const blocks = bot.findBlocks({
         matching: ids,
-        maxDistance: 10,
+        maxDistance: 20,
         count: 1000,
       });
       const time = (performance.now() - startTime).toFixed(2);
@@ -34,7 +52,12 @@ const FarmPumpkin = (bot, enable) => {
         bot.pathfinder.setGoal(new GoalNear(130, -60, 137));
       }
 
-      bot.chat(`I found ${blocks.length} ${name} blocks in ${time} ms`);
+      io.emit(
+        "chat-farm-pumpkin",
+        `${blocks.length} ${name} ในเวลา ${time} มิลลิวินาที`
+      );
+
+      console.log(`${blocks.length} ${name} ในเวลา ${time} มิลลิวินาที`);
     }, 10000);
   } else {
     clearInterval(FarmPumpkininterval);
