@@ -399,7 +399,7 @@
                 :disabled="is_pending"
                 @click="sendCommandLoop()"
               >
-                เปิดใช้งานคำสั่ง
+                เปิดใช้งาน
               </button>
               <button
                 v-if="is_enable_loop === true"
@@ -407,10 +407,40 @@
                 :disabled="is_pending"
                 @click="sendCommandLoop()"
               >
-                ปิดใช้งานคำสั่ง
+                ปิดใช้งาน
               </button>
             </div>
             <!-- Command Loop -->
+            <!-- AutoLeftClick -->
+            <div class="d-flex align-items-center mt-2">
+              <h1 class="text-start">เปิด/ปิด ออโต้คลิกซ้าย</h1>
+            </div>
+            <div class="input-group mt-1">
+              <input
+                type="number"
+                v-model="delay_left_click"
+                class="form-control"
+                :disabled="disable_auto_left_click_input"
+                placeholder="ดีเลย์ต่อการตี 1 ครั้ง แนะนำที่ 200"
+              />
+              <button
+                v-if="is_enable_auto_left_click === false"
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="ToggleAutoLeftClick()"
+              >
+                เปิดใช้งาน
+              </button>
+              <button
+                v-if="is_enable_auto_left_click === true"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="ToggleAutoLeftClick()"
+              >
+                ปิดใช้งาน
+              </button>
+            </div>
+            <!-- AutoLeftClick -->
             <!-- Button -->
             <div class="mt-2">
               <h1 class="text-start">ออโต้ฟาร์ม</h1>

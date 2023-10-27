@@ -25,6 +25,10 @@
         loop_message: "",
         loop_time: "",
         is_enable_loop: false,
+        delay_left_click: "",
+        is_enable_auto_left_click: false,
+        disable_auto_left_click_input: false,
+        disable_loop_command_input: false,
       };
     },
     methods: {
@@ -139,7 +143,6 @@
       sendCommandLoop: async function () {
         const self = this;
         try {
-          self.is_enable_loop = !self.is_enable_loop;
           if (self.loop_message === "") {
             return Swal.fire({
               icon: "error",
@@ -148,6 +151,17 @@
               timer: 1500,
             });
           }
+
+          if (self.loop_time === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ดีเลย์ก่อนส่ง",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_enable_loop = !self.is_enable_loop;
 
           self.is_pending = true;
           await fetch(`${apiPath}loop-command`, {
@@ -162,12 +176,77 @@
           });
 
           self.is_pending = false;
+          if (self.is_enable_loop) {
+            self.disable_loop_command_input = true;
+            return Swal.fire({
+              icon: "success",
+              title: "เปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            self.disable_loop_command_input = false;
+            Swal.fire({
+              icon: "success",
+              title: "ปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
           return Swal.fire({
-            icon: "success",
-            title: "ส่งคำสั่งสำเร็จ",
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
             showConfirmButton: false,
             timer: 1500,
           });
+        }
+      },
+      ToggleAutoLeftClick: async function () {
+        const self = this;
+        try {
+          if (self.delay_left_click === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ดีเลย์ก่อนเปิดใช้งาน",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_enable_auto_left_click = !self.is_enable_auto_left_click;
+
+          self.is_pending = true;
+          await fetch(`${apiPath}autoclick-left`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              delay: self.delay_left_click,
+            }),
+          });
+
+          self.is_pending = false;
+          if (self.is_enable_auto_left_click) {
+            self.disable_auto_left_click_input = true;
+            return Swal.fire({
+              icon: "success",
+              title: "เปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            self.disable_auto_left_click_input = false;
+            Swal.fire({
+              icon: "success",
+              title: "ปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
         } catch (error) {
           self.is_pending = false;
           console.log(error);

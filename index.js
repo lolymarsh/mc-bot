@@ -40,8 +40,7 @@ const createBot = () => {
     });
     return bot;
   } catch (error) {
-    console.log("createBot", error);
-    return;
+    return console.log("createBot", error);
   }
 };
 
@@ -60,6 +59,7 @@ bot.on("error", (message) => {
   io.emit("chat-error", message);
 });
 
+// Search ResourcePack
 bot.on("resourcePack", async () => {
   try {
     await bot.acceptResourcePack();
@@ -68,7 +68,9 @@ bot.on("resourcePack", async () => {
     console.log("Resource pack rejected");
   }
 });
+// Search ResourcePack
 
+// Search Window
 bot.on("windowOpen", async (window) => {
   if (window.type === "minecraft:generic_9x6") {
     console.log("Inventory 9x6 opened");
@@ -85,14 +87,13 @@ bot.on("windowOpen", async (window) => {
     }
   }
 });
+// Search Window
 
 // Drop Item Auto
 setInterval(() => {
   checkAndThrowItems("bamboo", 500);
   checkAndThrowItems("sugar_cane", 500);
 }, 5000); // delay 15 sec
-// Drop Item Auto
-
 const checkAndThrowItems = async (itemName, amount) => {
   try {
     const inventory = bot.inventory;
@@ -129,7 +130,6 @@ const checkAndThrowItems = async (itemName, amount) => {
     return console.log("checkAndThrowItems", error);
   }
 };
-
 const countItemsByName = async (inventory, itemName) => {
   const itemsWithMatchingName = await inventory
     .items()
@@ -140,13 +140,14 @@ const countItemsByName = async (inventory, itemName) => {
   );
   return itemCount;
 };
-
 // Drop Item Auto
 
+// Sent data to client
 app.post("/get-data", (req, res) => {
   try {
     return res.status(200).json({
       message: "Data From Server",
+      Username: process.env.BOT_NAME,
       ServerAddress: process.env.HOST_SERVER,
     });
   } catch (error) {
@@ -157,6 +158,7 @@ app.post("/get-data", (req, res) => {
     });
   }
 });
+// Sent data to client
 
 // FarmPumpkin
 let isFarmPumpkinEnabled = false;
@@ -335,11 +337,8 @@ app.post("/send-face-pos", (req, res) => {
   try {
     const { pos_yaw, pos_pitch } = req.body;
 
-    const currentYaw = bot.entity.yaw;
-    const currentPitch = bot.entity.pitch;
-
-    console.log("Current Yaw:", currentYaw);
-    console.log("Current Pitch:", currentPitch);
+    // const currentYaw = bot.entity.yaw;
+    // const currentPitch = bot.entity.pitch;
 
     bot.look(Math.PI * pos_yaw, Math.PI * pos_pitch, false);
 
