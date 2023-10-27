@@ -78,7 +78,9 @@
             class="card bg-secondary p-3 mt-2"
             v-if="showInventory === 'active' && dataInventory.length > 0"
           >
-            <p class="text-danger">***เตือนอย่าโยนไวบอทจะเด้ง***</p>
+            <p class="text-danger">
+              ***เตือนอย่าโยนไวบอทจะเด้งและจำนวนชิ้นของไอเทมไม่ถูกอัพเดทถ้าโยนให้โยนหมดทีเดียว***
+            </p>
             <div v-for="item in dataInventory">
               <div class="row">
                 <div class="col-md-6">
