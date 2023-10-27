@@ -42,11 +42,6 @@ const createBot = () => {
 
 bot = createBot();
 
-bot.on("resourcePack", () => {
-  console.log("Resource pack accepted.");
-  bot.acceptResourcePack();
-});
-
 bot.on("messagestr", (message) => {
   console.log(message);
   io.emit("chat-message", message);
@@ -59,6 +54,52 @@ bot.on("error", (message) => {
   console.log(message);
   io.emit("chat-message", message);
 });
+
+bot.on("resourcePack", () => {
+  console.log("Resource pack accepted.");
+  bot.acceptResourcePack();
+});
+
+// Drop Item Auto
+setInterval(() => {
+  checkAndThrowItems("diamond", 2240);
+}, 5000);
+
+const checkAndThrowItems = async (itemName, amount) => {
+  try {
+    const inventory = bot.inventory;
+    const items = inventory.items();
+
+    const totalItemCount = await items
+      .map((itemStack) => itemStack.count)
+      .reduce((acc, count) => acc + count, 0);
+
+    const itemsWithMatchingName = await inventory
+      .items()
+      .filter((itemStack) => itemStack.name === itemName);
+
+    // console.log(amount);
+    // console.log(itemsWithMatchingName);
+    // console.log(totalItemCount);
+
+    // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
+
+    if (totalItemCount >= amount) {
+      io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
+      async function processItems() {
+        for (let i = 0; i < itemsWithMatchingName.length; i++) {
+          bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // delay 1 sec
+        }
+      }
+
+      processItems();
+    }
+  } catch (error) {
+    return console.log(error);
+  }
+};
+// Drop Item Auto
 
 app.post("/get-data", (req, res) => {
   try {
@@ -80,6 +121,7 @@ let isFarmPumpkinEnabled = false;
 app.post("/farm-pumpkin", (req, res) => {
   try {
     if (isFarmPumpkinEnabled) {
+      io.emit("chat-bot-disable", `กำลังใช้ปิดงานออโต้ฟาร์ม Pumpkin`);
       isFarmPumpkinEnabled = false;
       autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
       return res.status(200).json({
@@ -87,6 +129,7 @@ app.post("/farm-pumpkin", (req, res) => {
         status: isFarmPumpkinEnabled,
       });
     } else {
+      io.emit("chat-bot-enable", `กำลังใช้เปิดงานออโต้ฟาร์ม Pumpkin`);
       isFarmPumpkinEnabled = true;
       autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
       return res.status(200).json({
@@ -109,6 +152,7 @@ let isFarmWheatEnabled = false;
 app.post("/farm-wheat", (req, res) => {
   try {
     if (isFarmWheatEnabled) {
+      io.emit("chat-bot-disable", `กำลังใช้ปิดงานออโต้ฟาร์ม Wheat`);
       isFarmWheatEnabled = false;
       autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
       // loop();
@@ -117,6 +161,7 @@ app.post("/farm-wheat", (req, res) => {
         status: isFarmWheatEnabled,
       });
     } else {
+      io.emit("chat-bot-enable", `กำลังใช้เปิดงานออโต้ฟาร์ม Wheat`);
       isFarmWheatEnabled = true;
       autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
       // loop();
@@ -140,6 +185,12 @@ app.post("/command", (req, res) => {
   try {
     const { message } = req.body;
     basiccommand.CommandTodo(bot, message);
+
+    if (message.includes("/")) {
+      io.emit("chat-bot", `บอทใช้คำสั่ง : ${message}`);
+    } else {
+      io.emit("chat-bot", `บอทพิมพ์ : ${message}`);
+    }
     return res.status(200).json({
       message: "Command",
       status: true,
@@ -158,6 +209,11 @@ app.post("/command", (req, res) => {
 app.post("/send-pos", (req, res) => {
   try {
     basiccommand.PositionToWalk(bot, req.body);
+
+    io.emit(
+      "chat-bot",
+      `บอทเดินกำลังเดินไปที่: X ${req.body.x_pos} Y ${req.body.y_pos} Z ${req.body.z_pos}`
+    );
     return res.status(200).json({
       message: "Position",
       status: true,
@@ -210,6 +266,8 @@ app.post("/amory-join", (req, res) => {
         await bot.clickWindow(15, 0, 0);
         await bot.clickWindow(16, 0, 0);
         await bot.clickWindow(17, 0, 0);
+
+        io.emit("chat-bot", `บอทกำลังเข้าสู่เซิร์ฟ Survival ของ Amorycraft`);
       }
     });
     return res.status(200).json({
@@ -258,6 +316,7 @@ app.post("/hold-item", async (req, res) => {
   const { name } = req.body;
   try {
     await bot.equip(bot.registry.itemsByName[name].id, "hand");
+    io.emit("chat-bot", `บอทกำลังถือ ${name}`);
     return res.status(200).json({
       message: "Hold Item",
       status: true,
@@ -277,6 +336,7 @@ app.post("/drop-item", async (req, res) => {
   const { name, count } = req.body;
   try {
     bot.toss(bot.registry.itemsByName[name].id, null, count);
+    io.emit("chat-bot", `บอทโยน ${name} จำนวน ${count}`);
     return res.status(200).json({
       message: "Drop Item",
       status: true,

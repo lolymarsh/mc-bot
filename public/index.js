@@ -25,17 +25,46 @@
         const socket = io();
         self.ws = socket;
         self.ws = io("http://localhost:3000");
+        // Chat Game
         socket.on("chat-message", (message) => {
           const chatBox = document.getElementById("chat-box"); // ใช้ getElementById โดยไม่ต้องใส่จุด (.)
           const chatMessage = document.createElement("p");
+          chatMessage.classList.add("text-light");
           chatMessage.textContent = message; // ใช้ textContent เพื่อแสดงข้อความเท่านั้น
           chatBox.appendChild(chatMessage);
         });
+
+        // Chat Bot
+        socket.on("chat-bot", (message) => {
+          const chatBox = document.getElementById("chat-bot"); // ใช้ getElementById โดยไม่ต้องใส่จุด (.)
+          const chatMessage = document.createElement("p");
+          chatMessage.classList.add("text-info");
+          chatMessage.textContent = message;
+          chatBox.appendChild(chatMessage);
+        });
+
+        socket.on("chat-bot-enable", (message) => {
+          const chatBox = document.getElementById("chat-bot"); // ใช้ getElementById โดยไม่ต้องใส่จุด (.)
+          const chatMessage = document.createElement("p");
+          chatMessage.classList.add("text-success");
+          chatMessage.textContent = message;
+          chatBox.appendChild(chatMessage);
+        });
+
+        socket.on("chat-bot-disable", (message) => {
+          const chatBox = document.getElementById("chat-bot"); // ใช้ getElementById โดยไม่ต้องใส่จุด (.)
+          const chatMessage = document.createElement("p");
+          chatMessage.classList.add("text-warning");
+          chatMessage.textContent = message;
+          chatBox.appendChild(chatMessage);
+        });
+        // Chat Bot
 
         socket.on("chat-farm-pumpkin", (message) => {
           const chatFarmPumpkin = document.getElementById("chat-pumpkin");
           const chatMessageFarmPumpkin = document.createElement("p");
           chatMessageFarmPumpkin.textContent = message;
+          chatMessageFarmPumpkin.classList.add("text-warning");
           chatFarmPumpkin.appendChild(chatMessageFarmPumpkin);
         });
 
@@ -43,6 +72,7 @@
           const chatFarmWheat = document.getElementById("chat-wheat");
           const chatMessageFarmWheat = document.createElement("p");
           chatMessageFarmWheat.textContent = message;
+          chatMessageFarmWheat.classList.add("text-warning");
           chatFarmWheat.appendChild(chatMessageFarmWheat);
         });
       },
