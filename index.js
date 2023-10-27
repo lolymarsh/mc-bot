@@ -105,16 +105,16 @@ const checkAndThrowItems = async (itemName, amount) => {
   }
 };
 
-async function countItemsByName(inventory, itemName) {
-  const itemsWithMatchingName = inventory
+const countItemsByName = async (inventory, itemName) => {
+  const itemsWithMatchingName = await inventory
     .items()
     .filter((itemStack) => itemStack.name === itemName);
-  const itemCount = itemsWithMatchingName.reduce(
+  const itemCount = await itemsWithMatchingName.reduce(
     (acc, itemStack) => acc + itemStack.count,
     0
   );
   return itemCount;
-}
+};
 
 // Drop Item Auto
 
