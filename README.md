@@ -4,14 +4,10 @@
 ทำเพื่อการศึกษาเท่านั้น
 ## สิ่งที่ต้องโหลด
 
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+- [NodeJS](https://nodejs.org/en)
 
 
 ## วิธีการติดตั้งและใช้งาน
- - [NodeJS](https://nodejs.org/en)
-
 NPM ใช้คำสั่งนี้
 ```bash
   cd botmcjs
@@ -42,4 +38,3 @@ cd botmcjs
 node index.js
 ```
 จากนั้นเข้าตาม PORT_SERVER เช่น http://localhost:3000/
-
