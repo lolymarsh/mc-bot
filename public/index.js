@@ -43,6 +43,13 @@
           chatBox.appendChild(chatMessage);
         });
 
+        socket.on("chat-error", (message) => {
+          const chatBox = document.getElementById("chat-bot");
+          const chatMessage = document.createElement("p");
+          chatMessage.textContent = message;
+          chatBox.appendChild(chatMessage);
+        });
+
         socket.on("chat-bot-enable", (message) => {
           const chatBox = document.getElementById("chat-bot"); // ใช้ getElementById โดยไม่ต้องใส่จุด (.)
           const chatMessage = document.createElement("p");

@@ -32,7 +32,9 @@ const createBot = () => {
     bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
 
-    bot.on("end", createBot);
+    bot.on("end", createBot, () => {
+      io.emit("chat-error", message);
+    });
     return bot;
   } catch (error) {
     console.log(error);
@@ -48,11 +50,11 @@ bot.on("messagestr", (message) => {
 });
 bot.on("kicked", (message) => {
   console.log(message);
-  io.emit("chat-message", message);
+  io.emit("chat-error", message);
 });
 bot.on("error", (message) => {
   console.log(message);
-  io.emit("chat-message", message);
+  io.emit("chat-error", message);
 });
 
 bot.on("resourcePack", () => {
@@ -62,8 +64,10 @@ bot.on("resourcePack", () => {
 
 // Drop Item Auto
 setInterval(() => {
-  checkAndThrowItems("diamond", 2240);
-}, 5000);
+  checkAndThrowItems("bamboo", 2176);
+  checkAndThrowItems("sugar_cane", 2176);
+}, 15000); // delay 15 sec
+// Drop Item Auto
 
 const checkAndThrowItems = async (itemName, amount) => {
   try {
