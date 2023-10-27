@@ -139,34 +139,36 @@
               <p class="text-start text-danger">
                 ***เซิร์ฟเวอร์ส่วนใหญ่ใช้งานไม่ได้ จึงไม่ได้มีการอัพเดทเพิ่ม***
               </p>
-              <button
-                v-if="isEnabled == false"
-                class="btn btn-primary"
-                @click="ToggleFarmPumpkin()"
-              >
-                เปิดใช้งานฟาร์ม Pumpkin
-              </button>
-              <button
-                v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
-                class="btn btn-primary"
-                @click="ToggleFarmPumpkin()"
-              >
-                ปิดใช้งานฟาร์ม Pumpkin
-              </button>
-              <button
-                v-if="isEnabled == false"
-                class="btn btn-primary"
-                @click="ToggleFarmWheat()"
-              >
-                เปิดใช้งานฟาร์ม Wheat
-              </button>
-              <button
-                v-if="isEnabled == true && farmMode == 'wheat_farm'"
-                class="btn btn-primary"
-                @click="ToggleFarmWheat()"
-              >
-                ปิดใช้งานฟาร์ม Wheat
-              </button>
+              <div class="d-flex justify-content-between">
+                <button
+                  v-if="isEnabled == false"
+                  class="btn btn-primary"
+                  @click="ToggleFarmPumpkin()"
+                >
+                  เปิดใช้งานฟาร์ม Pumpkin
+                </button>
+                <button
+                  v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
+                  class="btn btn-primary"
+                  @click="ToggleFarmPumpkin()"
+                >
+                  ปิดใช้งานฟาร์ม Pumpkin
+                </button>
+                <button
+                  v-if="isEnabled == false"
+                  class="btn btn-primary"
+                  @click="ToggleFarmWheat()"
+                >
+                  เปิดใช้งานฟาร์ม Wheat
+                </button>
+                <button
+                  v-if="isEnabled == true && farmMode == 'wheat_farm'"
+                  class="btn btn-primary"
+                  @click="ToggleFarmWheat()"
+                >
+                  ปิดใช้งานฟาร์ม Wheat
+                </button>
+              </div>
             </div>
           </div>
         </div>
