@@ -17,6 +17,7 @@
         isEnabled: false,
         serverAddress: "",
         is_pending: false,
+        inputs: [],
       };
     },
     methods: {
@@ -83,10 +84,10 @@
           chatFarmWheat.appendChild(chatMessageFarmWheat);
         });
       },
-      sendCommand: async function () {
+      sendCommand: async function (item) {
         const self = this;
         try {
-          if (self.message === "") {
+          if (item.message === "") {
             return Swal.fire({
               icon: "error",
               title: "กรุณาใส่ข้อความก่อนส่ง",
@@ -101,7 +102,7 @@
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ message: self.message }),
+            body: JSON.stringify({ message: item.message }),
           });
 
           self.is_pending = false;
@@ -456,11 +457,99 @@
           });
         }
       },
+      showModalAddCommandInput(item, index) {
+        const self = this;
+        if (item) {
+          Swal.fire({
+            title: "กรุณากรอกข้อมูล",
+            html: `
+        <div class="swal-content">
+        <input id="name" type="text" class="swal2-input" value="${item.name}" placeholder="ชื่อ">
+        <input id="message" type="text" class="swal2-input" value="${item.message}" placeholder="คำสั่ง">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const name = document.getElementById("name").value;
+              const message = document.getElementById("message").value;
+
+              const itemToGive = {
+                name: name,
+                message: message,
+              };
+
+              self.editInputCommand(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "กรุณากรอกข้อมูล",
+            html: `
+        <div class="swal-content">
+        <input id="name" type="text" class="swal2-input" placeholder="ชื่อ">
+        <input id="message" type="text" class="swal2-input" placeholder="คำสั่ง">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const name = document.getElementById("name").value;
+              const message = document.getElementById("message").value;
+
+              const itemToGive = {
+                name: name,
+                message: message,
+              };
+
+              self.addInputCommand(itemToGive);
+              return;
+            }
+          });
+        }
+      },
+      addInputCommand(item) {
+        const self = this;
+        self.inputs.push({ name: item.name, message: item.message });
+
+        localStorage.setItem("commandInputs", JSON.stringify(self.inputs));
+      },
+      editInputCommand(item, index) {
+        const self = this;
+        self.inputs[index] = item;
+
+        localStorage.setItem("commandInputs", JSON.stringify(self.inputs));
+      },
+      deleteInputCommand(index) {
+        const self = this;
+        Swal.fire({
+          icon: "warning",
+          title: "คุณแน่ใจที่จะลบหรือไม่?",
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            self.inputs.splice(index, 1);
+
+            localStorage.setItem("commandInputs", JSON.stringify(self.inputs));
+            return;
+          }
+        });
+      },
     },
     mounted: async function () {
       const self = this;
       await self.initWebSocket();
       await self.getDataFromServer();
+
+      const savedInputs = localStorage.getItem("commandInputs");
+      if (savedInputs) {
+        self.inputs = JSON.parse(savedInputs);
+      }
     },
   });
 
