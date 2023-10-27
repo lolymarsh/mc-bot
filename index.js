@@ -25,8 +25,8 @@ const createBot = () => {
     const bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
-      port: process.env.PORT_SERVER_MC || "",
-      auth: "offline",
+      port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
+      auth: "offline", // microsoft || offline
     });
 
     bot.setMaxListeners(20);
