@@ -66,7 +66,7 @@ bot.on("resourcePack", () => {
 setInterval(() => {
   checkAndThrowItems("bamboo", 2176);
   checkAndThrowItems("sugar_cane", 2176);
-}, 5000); // delay 15 sec
+}, 15000); // delay 15 sec
 // Drop Item Auto
 
 const checkAndThrowItems = async (itemName, amount) => {
