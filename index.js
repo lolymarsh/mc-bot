@@ -94,7 +94,7 @@ const checkAndThrowItems = async (itemName, amount) => {
       async function processItems() {
         for (let i = 0; i < itemsWithMatchingName.length; i++) {
           bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // delay 1 sec
+          await new Promise((resolve) => setTimeout(resolve, 500)); // delay 1 sec
         }
         return io.emit("chat-bot", `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`);
       }
