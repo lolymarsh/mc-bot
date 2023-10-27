@@ -148,6 +148,15 @@ const FarmWheat = (bot, enable, io) => {
                 new GoalNear(block.x, block.y, block.z)
               );
 
+              io.emit(
+                "chat-farm-wheat",
+                `${blocks.length} ${name} ในเวลา ${time} มิลลิวินาที`
+              );
+
+              console.log(
+                `${blocks.length} ${name} ในเวลา ${time} มิลลิวินาที`
+              );
+
               const toHarvest = await bot.findBlock({
                 point: bot.entity.position,
                 maxDistance: 6,
@@ -190,11 +199,6 @@ const FarmWheat = (bot, enable, io) => {
         if (blocks.length === 0) {
           bot.pathfinder.setGoal(new GoalNear(130, -60, 137));
         }
-
-        io.emit(
-          "chat-farm-wheat",
-          `${blocks.length} ${name} ในเวลา ${time} มิลลิวินาที`
-        );
       } catch (error) {
         console.log(error);
       }
