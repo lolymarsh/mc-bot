@@ -66,21 +66,22 @@ bot.on("resourcePack", () => {
 setInterval(() => {
   checkAndThrowItems("bamboo", 2176);
   checkAndThrowItems("sugar_cane", 2176);
-}, 15000); // delay 15 sec
+}, 5000); // delay 15 sec
 // Drop Item Auto
 
 const checkAndThrowItems = async (itemName, amount) => {
   try {
     const inventory = bot.inventory;
-    const items = inventory.items();
+    // const items = inventory.items();
 
-    const totalItemCount = await items
-      .map((itemStack) => itemStack.count)
-      .reduce((acc, count) => acc + count, 0);
+    // const totalItemCount = await items
+    //   .map((itemStack) => itemStack.count)
+    //   .reduce((acc, count) => acc + count, 0);
 
     const itemsWithMatchingName = await inventory
       .items()
       .filter((itemStack) => itemStack.name === itemName);
+    const itemCount = await countItemsByName(inventory, itemName);
 
     // console.log(amount);
     // console.log(itemsWithMatchingName);
@@ -88,7 +89,7 @@ const checkAndThrowItems = async (itemName, amount) => {
 
     // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
 
-    if (totalItemCount >= amount) {
+    if (itemCount >= amount) {
       io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
       async function processItems() {
         for (let i = 0; i < itemsWithMatchingName.length; i++) {
@@ -103,6 +104,18 @@ const checkAndThrowItems = async (itemName, amount) => {
     return console.log(error);
   }
 };
+
+async function countItemsByName(inventory, itemName) {
+  const itemsWithMatchingName = inventory
+    .items()
+    .filter((itemStack) => itemStack.name === itemName);
+  const itemCount = itemsWithMatchingName.reduce(
+    (acc, itemStack) => acc + itemStack.count,
+    0
+  );
+  return itemCount;
+}
+
 // Drop Item Auto
 
 app.post("/get-data", (req, res) => {
