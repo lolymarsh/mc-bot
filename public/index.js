@@ -49,6 +49,15 @@
       sendCommand: async function () {
         const self = this;
         try {
+          if (self.message === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ข้อความก่อนส่ง",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
           self.is_pending = true;
           await fetch(`${apiPath}command`, {
             method: "POST",
@@ -79,6 +88,33 @@
       sendPosition: async function () {
         const self = this;
         try {
+          if (self.x_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง X",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (self.y_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Y",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (self.z_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Z",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
           self.is_pending = true;
           await fetch(`${apiPath}send-pos`, {
             method: "POST",
