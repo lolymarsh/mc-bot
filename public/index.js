@@ -15,6 +15,7 @@
         dataInventory: [],
         farmMode: "",
         isEnabled: false,
+        serverAddress: "",
       };
     },
     methods: {
@@ -337,10 +338,44 @@
           });
         }
       },
+      getDataFromServer: async function () {
+        try {
+          const self = this;
+          const response = await fetch(`${apiPath}get-data`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+
+          self.serverAddress = data?.ServerAddress;
+          console.log(self.serverAddress);
+          return Swal.fire({
+            icon: "success",
+            title: "ยินดีต้อนรับครับ",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        } catch (error) {
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
     },
     mounted: async function () {
       const self = this;
       await self.initWebSocket();
+      await self.getDataFromServer();
     },
   });
 

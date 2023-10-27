@@ -19,22 +19,20 @@ server.listen(portServer, () => {
 
 app.use(express.json());
 app.use(express.static("public"));
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html"); // แก้ไขที่อยู่ไฟล์
-});
 
 const createBot = () => {
   try {
     const bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
-      // port: process.env.PORT_SERVER_MC || "",
+      port: process.env.PORT_SERVER_MC || "",
       auth: "offline",
     });
 
     bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
 
+    bot.on("end", createBot);
     return bot;
   } catch (error) {
     console.log(error);
@@ -42,7 +40,6 @@ const createBot = () => {
   }
 };
 
-bot.on("end", createBot);
 bot = createBot();
 
 bot.on("resourcePack", () => {
@@ -61,6 +58,21 @@ bot.on("kicked", (message) => {
 bot.on("error", (message) => {
   console.log(message);
   io.emit("chat-message", message);
+});
+
+app.post("/get-data", (req, res) => {
+  try {
+    return res.status(200).json({
+      message: "Data From Server",
+      ServerAddress: process.env.HOST_SERVER,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
 });
 
 // FarmPumpkin
