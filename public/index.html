@@ -182,36 +182,61 @@
                 ลบคำสั่ง
               </button>
             </div>
-
-            <h1 class="text-start mt-2">ส่งตำแหน่งให้บอทเดิน</h1>
-            <div class="input-group">
+            <div class="d-flex align-items-center">
+              <h1 class="text-start mt-2">ส่งตำแหน่งให้บอทเดิน</h1>
+              <button
+                @click="showModalAddPositionInput()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม
+              </button>
+            </div>
+            <div
+              class="input-group mt-2"
+              v-for="(input, index) in inputsPos"
+              :key="index"
+            >
+              <span class="input-group-text" v-text="input.name"></span>
               <input
-                v-model="x_pos"
+                v-model="input.x_pos"
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง X"
               />
               <input
-                v-model="y_pos"
+                v-model="input.y_pos"
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง Y"
               />
               <input
-                v-model="z_pos"
+                v-model="input.z_pos"
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง Z"
               />
-              <div>
-                <button
-                  class="btn btn-primary"
-                  :disabled="is_pending"
-                  @click="sendPosition()"
-                >
-                  ส่งตำแหน่ง
-                </button>
-              </div>
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendPosition(input)"
+              >
+                ส่งตำแหน่ง
+              </button>
+              <button
+                class="btn btn-warning"
+                :disabled="is_pending"
+                @click="showModalAddPositionInput(input, index)"
+              >
+                แก้ไขตำแหน่ง
+              </button>
+              <button
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="deleteInputPosition(index)"
+              >
+                ลบตำแหน่ง
+              </button>
             </div>
             <!-- Button -->
             <div class="mt-2">

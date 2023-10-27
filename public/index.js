@@ -7,10 +7,6 @@
     data: function () {
       return {
         ws: null,
-        message: "",
-        x_pos: "",
-        y_pos: "",
-        z_pos: "",
         showInventory: "inactive",
         dataInventory: [],
         farmMode: "",
@@ -18,6 +14,7 @@
         serverAddress: "",
         is_pending: false,
         inputs: [],
+        inputsPos: [],
       };
     },
     methods: {
@@ -123,10 +120,10 @@
           });
         }
       },
-      sendPosition: async function () {
+      sendPosition: async function (item) {
         const self = this;
         try {
-          if (self.x_pos === "") {
+          if (item.x_pos === "") {
             return Swal.fire({
               icon: "error",
               title: "กรุณากรอกตำแหน่ง X",
@@ -135,7 +132,7 @@
             });
           }
 
-          if (self.y_pos === "") {
+          if (item.y_pos === "") {
             return Swal.fire({
               icon: "error",
               title: "กรุณากรอกตำแหน่ง Y",
@@ -144,7 +141,7 @@
             });
           }
 
-          if (self.z_pos === "") {
+          if (item.z_pos === "") {
             return Swal.fire({
               icon: "error",
               title: "กรุณากรอกตำแหน่ง Z",
@@ -160,14 +157,11 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              x_pos: self.x_pos,
-              y_pos: self.y_pos,
-              z_pos: self.z_pos,
+              x_pos: item.x_pos,
+              y_pos: item.y_pos,
+              z_pos: item.z_pos,
             }),
           });
-          self.x_pos = "";
-          self.y_pos = "";
-          self.z_pos = "";
 
           self.is_pending = false;
           return Swal.fire({
@@ -513,12 +507,49 @@
       },
       addInputCommand(item) {
         const self = this;
+
+        if (item.name === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกชื่อคำสั่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.message === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกคำสั่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
         self.inputs.push({ name: item.name, message: item.message });
 
         localStorage.setItem("commandInputs", JSON.stringify(self.inputs));
       },
       editInputCommand(item, index) {
         const self = this;
+
+        if (item.name === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกชื่อคำสั่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.message === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกคำสั่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
         self.inputs[index] = item;
 
         localStorage.setItem("commandInputs", JSON.stringify(self.inputs));
@@ -540,6 +571,183 @@
           }
         });
       },
+      showModalAddPositionInput(item, index) {
+        const self = this;
+        if (item) {
+          Swal.fire({
+            title: "กรุณากรอกข้อมูล",
+            html: `
+        <div class="swal-content">
+        <input id="name" type="text" class="swal2-input" value="${item.name}" placeholder="ชื่อ">
+        <input id="x_pos" type="text" class="swal2-input" value="${item.x_pos}" placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="text" class="swal2-input" value="${item.y_pos}" placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="text" class="swal2-input" value="${item.z_pos}" placeholder="ตำแหน่ง Z">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const name = document.getElementById("name").value;
+              const xpos = document.getElementById("x_pos").value;
+              const ypos = document.getElementById("y_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+
+              const itemToGive = {
+                name: name,
+                x_pos: xpos,
+                y_pos: ypos,
+                z_pos: zpos,
+              };
+
+              self.editInputPosition(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "กรุณากรอกข้อมูล",
+            html: `
+        <div class="swal-content">
+        <input id="name" type="text" class="swal2-input"   placeholder="ชื่อ">
+        <input id="x_pos" type="text" class="swal2-input"  placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="text" class="swal2-input"  placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="text" class="swal2-input"  placeholder="ตำแหน่ง Z">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const name = document.getElementById("name").value;
+              const xpos = document.getElementById("x_pos").value;
+              const ypos = document.getElementById("y_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+
+              const itemToGive = {
+                name: name,
+                x_pos: xpos,
+                y_pos: ypos,
+                z_pos: zpos,
+              };
+
+              self.addInputPosition(itemToGive);
+              return;
+            }
+          });
+        }
+      },
+      addInputPosition(item) {
+        const self = this;
+
+        if (item.name === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกชื่อตำแหน่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.x_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง X",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.y_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง Y",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.z_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง Z",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        self.inputsPos.push({
+          name: item.name,
+          x_pos: item.x_pos,
+          y_pos: item.y_pos,
+          z_pos: item.z_pos,
+        });
+
+        localStorage.setItem("PositionInputs", JSON.stringify(self.inputsPos));
+      },
+      editInputPosition(item, index) {
+        const self = this;
+
+        if (item.name === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกชื่อตำแหน่ง",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.x_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง X",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.y_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง Y",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.z_pos === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณากรอกตำแหน่ง Z",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        self.inputsPos[index] = item;
+
+        localStorage.setItem("PositionInputs", JSON.stringify(self.inputsPos));
+      },
+      deleteInputPosition(index) {
+        const self = this;
+        Swal.fire({
+          icon: "warning",
+          title: "คุณแน่ใจที่จะลบหรือไม่?",
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            self.inputsPos.splice(index, 1);
+
+            localStorage.setItem(
+              "PositionInputs",
+              JSON.stringify(self.inputsPos)
+            );
+            return;
+          }
+        });
+      },
     },
     mounted: async function () {
       const self = this;
@@ -547,8 +755,13 @@
       await self.getDataFromServer();
 
       const savedInputs = localStorage.getItem("commandInputs");
+      const savedInputsPosition = localStorage.getItem("PositionInputs");
       if (savedInputs) {
         self.inputs = JSON.parse(savedInputs);
+      }
+
+      if (savedInputsPosition) {
+        self.inputsPos = JSON.parse(savedInputsPosition);
       }
     },
   });
