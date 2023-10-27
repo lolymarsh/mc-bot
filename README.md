@@ -41,4 +41,5 @@ node index.js
 
 ## ตัวอย่าง
 
-![alt text]([https://media.discordapp.net/attachments/738757840621273210/1167367978011074581/image.png?ex=654ddf26&is=653b6a26&hm=42b74c6e8a739cce7dcd52538d2f6fc042093fcee54cb5c3717369061c5360b3&=&width=1354&height=676])
+![alt text](https://media.discordapp.net/attachments/738757840621273210/1167367978011074581/image.png?ex=654ddf26&is=653b6a26&hm=42b74c6e8a739cce7dcd52538d2f6fc042093fcee54cb5c3717369061c5360b3&=&width=1354&height=676)
+
