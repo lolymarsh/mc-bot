@@ -40,7 +40,7 @@ const createBot = () => {
     });
     return bot;
   } catch (error) {
-    console.log(error);
+    console.log("createBot", error);
     return;
   }
 };
@@ -60,9 +60,13 @@ bot.on("error", (message) => {
   io.emit("chat-error", message);
 });
 
-bot.on("resourcePack", () => {
-  console.log("Resource pack accepted.");
-  bot.acceptResourcePack();
+bot.on("resourcePack", async () => {
+  try {
+    await bot.acceptResourcePack();
+    console.log("Resource pack accepted");
+  } catch (error) {
+    console.log("Resource pack rejected");
+  }
 });
 
 bot.on("windowOpen", async (window) => {
@@ -122,7 +126,7 @@ const checkAndThrowItems = async (itemName, amount) => {
       processItems();
     }
   } catch (error) {
-    return console.log(error);
+    return console.log("checkAndThrowItems", error);
   }
 };
 
@@ -146,7 +150,7 @@ app.post("/get-data", (req, res) => {
       ServerAddress: process.env.HOST_SERVER,
     });
   } catch (error) {
-    console.log(error);
+    console.log("Drop Item Auto", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -176,7 +180,7 @@ app.post("/farm-pumpkin", (req, res) => {
       });
     }
   } catch (error) {
-    console.log(err);
+    console.log("FarmPumpkin", err);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -209,7 +213,7 @@ app.post("/farm-wheat", (req, res) => {
       });
     }
   } catch (error) {
-    console.log(err);
+    console.log("FarmWheat", err);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -234,7 +238,7 @@ app.post("/command", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Command to bot", err);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -275,7 +279,7 @@ app.post("/loop-command", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Command with loop", err);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -298,7 +302,7 @@ app.post("/send-pos", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Position TO GO", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -317,7 +321,7 @@ app.post("/follow-user", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Position-user", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -345,7 +349,7 @@ app.post("/send-face-pos", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(error);
+    console.log("Face to x z", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -381,7 +385,7 @@ app.post("/autoclick-left", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(error);
+    console.log("AutoLeftClick", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -418,7 +422,7 @@ app.post("/amory-join", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Join to survival", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -445,7 +449,7 @@ app.post("/check-inventory", (req, res) => {
       datas: result,
     });
   } catch (error) {
-    console.log(err);
+    console.log("Check Inventory", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -464,8 +468,8 @@ app.post("/hold-item", async (req, res) => {
       message: "Hold Item",
       status: true,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log("Hold Item", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -485,8 +489,8 @@ app.post("/hold-item-right-click", async (req, res) => {
       message: "Hold Item",
       status: true,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log("Hold Item And Right Click", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -506,7 +510,7 @@ app.post("/drop-item", async (req, res) => {
       status: true,
     });
   } catch (err) {
-    console.log(err);
+    console.log("Drop Item", err);
     return res.status(400).json({
       message: "Error",
       status: false,
