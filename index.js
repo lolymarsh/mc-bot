@@ -3,23 +3,18 @@ const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
 const app = express();
-const port = 4000;
+const portServer = process.env.PORT_SERVER || 3000;
 const server = http.createServer(app);
 const io = socketIO(server);
 const mineflayer = require("mineflayer");
-const {
-  pathfinder,
-  Movements,
-  goals: { GoalNear },
-} = require("mineflayer-pathfinder");
-const { Vec3 } = require("vec3");
+const { pathfinder } = require("mineflayer-pathfinder");
 
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 const commandbasic = require("./command/pathfinder");
 
-server.listen(3000, () => {
-  console.log("listening on *:3000");
+server.listen(portServer, () => {
+  console.log(`listening on *:${portServer}`);
 });
 
 app.use(express.json());
@@ -33,13 +28,13 @@ const createBot = () => {
     const bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
-      // port: process.env.PORT_SERVER || "",
+      // port: process.env.PORT_SERVER_MC || "",
       auth: "offline",
     });
 
+    bot.loadPlugin(pathfinder);
     bot.on("error", (err) => console.log(err));
     bot.on("end", createBot);
-    bot.loadPlugin(pathfinder);
 
     return bot;
   } catch (error) {
@@ -71,19 +66,27 @@ bot.on("error", (message) => {
 // FarmPumpkin
 let isFarmPumpkinEnabled = false;
 app.post("/farm-pumpkin", (req, res) => {
-  if (isFarmPumpkinEnabled) {
-    isFarmPumpkinEnabled = false;
-    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
-    return res.status(200).json({
-      message: "FarmPumpkin",
-      status: isFarmPumpkinEnabled,
-    });
-  } else {
-    isFarmPumpkinEnabled = true;
-    autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
-    return res.status(200).json({
-      message: "FarmPumpkin",
-      status: isFarmPumpkinEnabled,
+  try {
+    if (isFarmPumpkinEnabled) {
+      isFarmPumpkinEnabled = false;
+      autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
+      return res.status(200).json({
+        message: "FarmPumpkin",
+        status: isFarmPumpkinEnabled,
+      });
+    } else {
+      isFarmPumpkinEnabled = true;
+      autofarm.FarmPumpkin(bot, isFarmPumpkinEnabled, io);
+      return res.status(200).json({
+        message: "FarmPumpkin",
+        status: isFarmPumpkinEnabled,
+      });
+    }
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
     });
   }
 });
@@ -92,98 +95,68 @@ app.post("/farm-pumpkin", (req, res) => {
 // FarmWheat
 let isFarmWheatEnabled = false;
 app.post("/farm-wheat", (req, res) => {
-  if (isFarmWheatEnabled) {
-    isFarmWheatEnabled = false;
-    autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
-    // loop();
-    return res.status(200).json({
-      message: "FarmWheat",
-      status: isFarmWheatEnabled,
-    });
-  } else {
-    isFarmWheatEnabled = true;
-    autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
-    // loop();
-    return res.status(200).json({
-      message: "FarmWheat",
-      status: isFarmWheatEnabled,
+  try {
+    if (isFarmWheatEnabled) {
+      isFarmWheatEnabled = false;
+      autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
+      // loop();
+      return res.status(200).json({
+        message: "FarmWheat",
+        status: isFarmWheatEnabled,
+      });
+    } else {
+      isFarmWheatEnabled = true;
+      autofarm.FarmWheat(bot, isFarmWheatEnabled, io);
+      // loop();
+      return res.status(200).json({
+        message: "FarmWheat",
+        status: isFarmWheatEnabled,
+      });
+    }
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
     });
   }
 });
-
-function blockToSow() {
-  return bot.findBlock({
-    point: bot.entity.position,
-    matching: bot.registry.blocksByName.farmland.id,
-    maxDistance: 6,
-    useExtraInfo: (block) => {
-      const blockAbove = bot.blockAt(block.position.offset(0, 1, 0));
-      return !blockAbove || blockAbove.type === 0;
-    },
-  });
-}
-
-function blockToHarvest() {
-  return bot.findBlock({
-    point: bot.entity.position,
-    maxDistance: 6,
-    matching: (block) => {
-      return (
-        block &&
-        block.type === bot.registry.blocksByName.wheat.id &&
-        block.metadata === 7
-      );
-    },
-  });
-}
-
-async function loop() {
-  try {
-    while (1) {
-      const toHarvest = blockToHarvest();
-      if (toHarvest) {
-        await bot.dig(toHarvest);
-      } else {
-        break;
-      }
-    }
-    while (1) {
-      const toSow = blockToSow();
-      if (toSow) {
-        await bot.equip(bot.registry.itemsByName.wheat_seeds.id, "hand");
-        await bot.placeBlock(toSow, new Vec3(0, 1, 0));
-      } else {
-        break;
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  }
-
-  // No block to harvest or sow. Postpone next loop a bit
-  setTimeout(loop, 5000);
-}
-
 // FarmWheat
 
 // Command to bot
 app.post("/command", (req, res) => {
-  const { message } = req.body;
-  basiccommand.CommandTodo(bot, message);
-  return res.status(200).json({
-    message: "Command",
-    status: true,
-  });
+  try {
+    const { message } = req.body;
+    basiccommand.CommandTodo(bot, message);
+    return res.status(200).json({
+      message: "Command",
+      status: true,
+    });
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
 });
 // Command to bot
 
 // Position TO GO
 app.post("/send-pos", (req, res) => {
-  basiccommand.PositionToWalk(bot, req.body);
-  return res.status(200).json({
-    message: "Position",
-    status: true,
-  });
+  try {
+    basiccommand.PositionToWalk(bot, req.body);
+    return res.status(200).json({
+      message: "Position",
+      status: true,
+    });
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
 });
 // Position TO GO
 
@@ -197,54 +170,74 @@ app.post("/follow-user", (req, res) => {
       status: true,
     });
   } catch (error) {
-    console.log(error);
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
   }
 });
 // Position-user
 
 // Join to survival
 app.post("/amory-join", (req, res) => {
-  bot.activateItem();
-  bot.on("windowOpen", async (window) => {
-    if (window.type === "minecraft:generic_9x6") {
-      // console.log("Inventory 9x6 opened");
-      // for (let i = 0; i < window.slots.length; i++) {
-      //   const slot = window.slots[i];
-      //   if (slot) {
-      //     console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
-      //     if (slot.nbt) {
-      //       console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
-      //     }
-      //   }
-      // }
-      await bot.clickWindow(15, 0, 0);
-      await bot.clickWindow(16, 0, 0);
-      await bot.clickWindow(17, 0, 0);
-    }
-  });
-  return res.status(200).json({
-    message: "Join to survival",
-    status: true,
-  });
+  try {
+    bot.activateItem();
+    bot.on("windowOpen", async (window) => {
+      if (window.type === "minecraft:generic_9x6") {
+        // console.log("Inventory 9x6 opened");
+        // for (let i = 0; i < window.slots.length; i++) {
+        //   const slot = window.slots[i];
+        //   if (slot) {
+        //     console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
+        //     if (slot.nbt) {
+        //       console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
+        //     }
+        //   }
+        // }
+        await bot.clickWindow(15, 0, 0);
+        await bot.clickWindow(16, 0, 0);
+        await bot.clickWindow(17, 0, 0);
+      }
+    });
+    return res.status(200).json({
+      message: "Join to survival",
+      status: true,
+    });
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
 });
 // Join to survival
 
 // Check Inventory
 app.post("/check-inventory", (req, res) => {
-  const inventory = bot.inventory.items();
-  const result = inventory.map((item) => ({
-    name: item.name,
-    displayName: item.displayName,
-    stackSize: item.stackSize,
-    slot: item.slot,
-  }));
+  try {
+    const inventory = bot.inventory.items();
+    const result = inventory.map((item) => ({
+      name: item.name,
+      displayName: item.displayName,
+      stackSize: item.stackSize,
+      slot: item.slot,
+    }));
 
-  // console.log(result);
-  return res.status(200).json({
-    message: "Check Inven",
-    status: true,
-    datas: result,
-  });
+    // console.log(result);
+    return res.status(200).json({
+      message: "Check Inven",
+      status: true,
+      datas: result,
+    });
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
 });
 // Check Inventory
 
@@ -259,8 +252,8 @@ app.post("/hold-item", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(200).json({
-      message: "Hold Item",
+    return res.status(400).json({
+      message: "Error",
       status: false,
     });
   }
@@ -278,8 +271,8 @@ app.post("/drop-item", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(200).json({
-      message: "Drop Item",
+    return res.status(400).json({
+      message: "Error",
       status: false,
     });
   }
