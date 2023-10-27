@@ -751,17 +751,24 @@
     },
     mounted: async function () {
       const self = this;
-      await self.initWebSocket();
-      await self.getDataFromServer();
+      try {
+        self.is_pending = true;
+        await self.initWebSocket();
+        await self.getDataFromServer();
 
-      const savedInputs = localStorage.getItem("commandInputs");
-      const savedInputsPosition = localStorage.getItem("PositionInputs");
-      if (savedInputs) {
-        self.inputs = JSON.parse(savedInputs);
-      }
+        const savedInputs = localStorage.getItem("commandInputs");
+        const savedInputsPosition = localStorage.getItem("PositionInputs");
+        if (savedInputs) {
+          self.inputs = JSON.parse(savedInputs);
+        }
 
-      if (savedInputsPosition) {
-        self.inputsPos = JSON.parse(savedInputsPosition);
+        if (savedInputsPosition) {
+          self.inputsPos = JSON.parse(savedInputsPosition);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        self.is_pending = false;
       }
     },
   });
