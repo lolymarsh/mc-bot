@@ -182,7 +182,7 @@
               </div>
             </div>
             <div class="d-flex align-items-center">
-              <h1 class="text-start mt-2">ส่งคำสั่งหรือส่งแชท</h1>
+              <h1 class="text-start">ส่งคำสั่งหรือส่งแชท</h1>
               <button
                 @click="showModalAddCommandInput()"
                 class="btn btn-success mx-2"
@@ -247,18 +247,21 @@
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง X"
+                disabled
               />
               <input
                 v-model="input.y_pos"
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง Y"
+                disabled
               />
               <input
                 v-model="input.z_pos"
                 type="number"
                 class="form-control"
                 placeholder="ตำแหน่ง Z"
+                disabled
               />
               <button
                 class="btn btn-primary"
