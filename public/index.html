@@ -259,6 +259,7 @@
                 ลบคำสั่ง
               </button>
             </div>
+            <!-- Postion -->
             <div class="d-flex align-items-center">
               <h1 class="text-start mt-2">ส่งตำแหน่งให้บอทเดิน</h1>
               <button
@@ -318,6 +319,63 @@
                 ลบตำแหน่ง
               </button>
             </div>
+            <!-- Position -->
+            <!-- Face Position -->
+            <div class="d-flex align-items-center">
+              <h1 class="text-start mt-2">ส่งตำแหน่งหน้าให้บอทหันหน้า</h1>
+              <button
+                @click="showModalAddFacePositionInput()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม
+              </button>
+            </div>
+            <div
+              class="input-group mt-2"
+              v-for="(input, index) in inputsFacePos"
+              :key="index"
+            >
+              <span class="input-group-text" v-text="input.name"></span>
+              <input
+                v-model="input.x_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Yaw"
+                disabled
+              />
+              <input
+                v-model="input.z_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Pitch"
+                disabled
+              />
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendFacePosition(input)"
+              >
+                ส่งตำแหน่ง
+              </button>
+              <button
+                v-if="input.name !== 'North' && input.name !== 'South' && input.name !== 'East' && input.name !== 'West'"
+                class="btn btn-warning"
+                :disabled="is_pending"
+                @click="showModalAddFacePositionInput(input, index)"
+              >
+                แก้ไขตำแหน่ง
+              </button>
+              <button
+                v-if="input.name !== 'North' && input.name !== 'South' && input.name !== 'East' && input.name !== 'West'"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="deleteInputFacePosition(index)"
+              >
+                ลบตำแหน่ง
+              </button>
+            </div>
+            <!-- Face Position -->
             <!-- Command Loop -->
             <div class="d-flex align-items-center mt-2">
               <h1 class="text-start">ส่งคำสั่งหรือส่งแชทแบบลูป</h1>

@@ -670,6 +670,11 @@ minecraft-protocol@^1.44.0:
     uuid-1345 "^1.0.1"
     yggdrasil "^1.4.0"
 
+mineflayer-autoclicker@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/mineflayer-autoclicker/-/mineflayer-autoclicker-1.2.0.tgz#217417963b260cfd5549ece3989ac6bd8d1bd06b"
+  integrity sha512-SplwR5Qs7IXHHLs3PO637ZX8RWhjddHh3M8U/SuwLEUTprMaK3uISNdGZHaRPvDclTknIkDIwaYMBsoRFJUS2w==
+
 mineflayer-navigate@^0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/mineflayer-navigate/-/mineflayer-navigate-0.0.10.tgz#7db52b47fd41c9a253e487885ed47c7fc3fb50f8"

@@ -20,9 +20,11 @@ server.listen(portServer, () => {
 app.use(express.json());
 app.use(express.static("public"));
 
+let bot = null;
+
 const createBot = () => {
   try {
-    const bot = mineflayer.createBot({
+    bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
       port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
@@ -31,6 +33,7 @@ const createBot = () => {
 
     bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
+    bot.loadPlugin(require("mineflayer-autoclicker"));
 
     bot.on("end", createBot, () => {
       io.emit("chat-error", message);
@@ -322,6 +325,70 @@ app.post("/follow-user", (req, res) => {
   }
 });
 // Position-user
+
+// Face to x z
+app.post("/send-face-pos", (req, res) => {
+  try {
+    const { pos_yaw, pos_pitch } = req.body;
+
+    const currentYaw = bot.entity.yaw;
+    const currentPitch = bot.entity.pitch;
+
+    console.log("Current Yaw:", currentYaw);
+    console.log("Current Pitch:", currentPitch);
+
+    bot.look(Math.PI * pos_yaw, Math.PI * pos_pitch, false);
+
+    io.emit("chat-bot", `บอทหันหน้าไป: Yaw ${pos_yaw} Pitch ${pos_pitch}`);
+    return res.status(200).json({
+      message: "Face Position",
+      status: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Face to x z
+
+// AutoLeftClick
+let isAutoLeftClick = false;
+app.post("/autoclick-left", (req, res) => {
+  try {
+    const { delay } = req.body;
+    if (isAutoLeftClick !== true) {
+      isAutoLeftClick = true;
+      bot.autoclicker.options = {
+        max_distance: 3.5, // Max distance to hit entities (Default: 3.5)
+        swing_through: ["experience_orb"], // Hit through entities (Default: ['experience_orb'])
+        blacklist: ["player"], // Do not hit certain entities (Default: ['player'])
+        stop_on_window: true, // Stop if a window is opened (Default: true)
+        always_swing: true, // Always swing, even if there is no entity (Default: true)
+        delay: delay,
+      };
+      bot.autoclicker.start();
+    } else {
+      isAutoLeftClick = false;
+      bot.autoclicker.stop();
+    }
+
+    io.emit("chat-bot", `บอทเปิด AutoClcik : Delay ${delay} มิลลิวินาที`);
+    return res.status(200).json({
+      message: "Face Position",
+      status: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// AutoLeftClick
 
 // Join to survival
 app.post("/amory-join", (req, res) => {

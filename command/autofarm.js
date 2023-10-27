@@ -143,6 +143,7 @@ const FarmWheat = (bot, enable, io) => {
         if (blocks.length > 0) {
           async function processBlocks() {
             for (const block of blocks) {
+              console.log(block);
               await new Promise((resolve) => setTimeout(resolve, 500));
               await bot.pathfinder.setGoal(
                 new GoalNear(block.x, block.y, block.z)
