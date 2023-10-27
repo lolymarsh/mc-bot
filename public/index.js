@@ -292,12 +292,21 @@
           });
 
           self.is_pending = false;
-          Swal.fire({
-            icon: "success",
-            title: "เปิดใช้งานออโต้ฟาร์มฟักทองสำเร็จ",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          if (self.isEnabled) {
+            return Swal.fire({
+              icon: "success",
+              title: "เปิดใช้งานออโต้ฟาร์มฟักทองสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            return Swal.fire({
+              icon: "success",
+              title: "ปิดใช้งานออโต้ฟาร์มฟักทองสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
         } catch (error) {
           self.is_pending = false;
           console.log(error);
@@ -323,12 +332,21 @@
           });
 
           self.is_pending = false;
-          return Swal.fire({
-            icon: "success",
-            title: "เปิดใช้งานออโต้ฟาร์มข้าวสำเร็จ",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          if (self.isEnabled) {
+            return Swal.fire({
+              icon: "success",
+              title: "เปิดใช้งานออโต้ฟาร์มข้าวสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            return Swal.fire({
+              icon: "success",
+              title: "ปิดใช้งานออโต้ฟาร์มข้าวสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
         } catch (error) {
           self.is_pending = false;
           console.log(error);
