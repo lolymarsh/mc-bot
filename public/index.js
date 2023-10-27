@@ -164,12 +164,7 @@
           self.dataInventory = data?.datas;
           self.showInventory = "active";
           self.is_pending = false;
-          return Swal.fire({
-            icon: "success",
-            title: "แสดงไอเทมสำเร็จ",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          return;
         } catch (error) {
           self.is_pending = false;
           console.log(error);
@@ -184,12 +179,6 @@
       clickHideInventory: function () {
         const self = this;
         self.showInventory = "inactive";
-        return Swal.fire({
-          icon: "success",
-          title: "ซ่อนไอเทมเรียบร้อย",
-          showConfirmButton: false,
-          timer: 1500,
-        });
       },
       ItemToHand: async function (nameItem) {
         const self = this;
@@ -237,7 +226,7 @@
               count: quantity,
             }),
           });
-
+          await self.checkInventory();
           self.is_pending = false;
           return Swal.fire({
             icon: "success",
@@ -285,7 +274,6 @@
               return;
             } else {
               await self.dropItem(name, quantity);
-              await self.checkInventory();
             }
           }
         });
@@ -401,12 +389,7 @@
 
           self.serverAddress = data?.ServerAddress;
           self.is_pending = false;
-          return Swal.fire({
-            icon: "success",
-            title: "ยินดีต้อนรับครับ",
-            showConfirmButton: false,
-            timer: 2000,
-          });
+          return;
         } catch (error) {
           self.is_pending = false;
           console.log(error);
