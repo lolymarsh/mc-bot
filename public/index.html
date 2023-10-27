@@ -49,6 +49,7 @@
           <button
             v-if="showInventory !== 'active'"
             class="btn btn-primary mt-2"
+            :disabled="is_pending"
             @click="checkInventory()"
           >
             เช็คของในตัวบอท
@@ -56,6 +57,7 @@
           <button
             v-if="showInventory === 'active'"
             class="btn btn-primary mt-2"
+            :disabled="is_pending"
             @click="clickHideInventory()"
           >
             ซ่อนไอเทม
@@ -94,6 +96,7 @@
               <div class="input-group">
                 <button
                   class="btn btn-primary"
+                  :disabled="is_pending"
                   @click="gotoSurvivalAmorycraft()"
                 >
                   เข้า Survival ของ Armorycraft
@@ -108,7 +111,11 @@
                 class="form-control"
                 placeholder="ส่งคำสั่งให้บอทหรือส่งข้อความไปในแชท"
               />
-              <button class="btn btn-primary" @click="sendCommand()">
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendCommand()"
+              >
                 ส่งคำสั่ง
               </button>
             </div>
@@ -133,7 +140,11 @@
                 placeholder="ตำแหน่ง Z"
               />
               <div>
-                <button class="btn btn-primary" @click="sendPosition()">
+                <button
+                  class="btn btn-primary"
+                  :disabled="is_pending"
+                  @click="sendPosition()"
+                >
                   ส่งตำแหน่ง
                 </button>
               </div>
@@ -148,6 +159,7 @@
                 <button
                   v-if="isEnabled == false"
                   class="btn btn-primary"
+                  :disabled="is_pending"
                   @click="ToggleFarmPumpkin()"
                 >
                   เปิดใช้งานฟาร์ม Pumpkin
@@ -155,6 +167,7 @@
                 <button
                   v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
                   class="btn btn-primary"
+                  :disabled="is_pending"
                   @click="ToggleFarmPumpkin()"
                 >
                   ปิดใช้งานฟาร์ม Pumpkin
@@ -162,6 +175,7 @@
                 <button
                   v-if="isEnabled == false"
                   class="btn btn-primary"
+                  :disabled="is_pending"
                   @click="ToggleFarmWheat()"
                 >
                   เปิดใช้งานฟาร์ม Wheat
@@ -169,6 +183,7 @@
                 <button
                   v-if="isEnabled == true && farmMode == 'wheat_farm'"
                   class="btn btn-primary"
+                  :disabled="is_pending"
                   @click="ToggleFarmWheat()"
                 >
                   ปิดใช้งานฟาร์ม Wheat

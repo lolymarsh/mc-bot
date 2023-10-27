@@ -16,6 +16,7 @@
         farmMode: "",
         isEnabled: false,
         serverAddress: "",
+        is_pending: false,
       };
     },
     methods: {
@@ -46,9 +47,10 @@
         });
       },
       sendCommand: async function () {
+        const self = this;
         try {
-          const self = this;
-          const response = await fetch(`${apiPath}command`, {
+          self.is_pending = true;
+          await fetch(`${apiPath}command`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -56,9 +58,7 @@
             body: JSON.stringify({ message: self.message }),
           });
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "ส่งคำสั่งสำเร็จ",
@@ -66,6 +66,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -76,9 +77,10 @@
         }
       },
       sendPosition: async function () {
+        const self = this;
         try {
-          const self = this;
-          const response = await fetch(`${apiPath}send-pos`, {
+          self.is_pending = true;
+          await fetch(`${apiPath}send-pos`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -92,9 +94,8 @@
           self.x_pos = "";
           self.y_pos = "";
           self.z_pos = "";
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "สั่งบอทเคลื่อนที่สำเร็จ",
@@ -102,6 +103,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = true;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -112,8 +114,9 @@
         }
       },
       checkInventory: async function () {
+        const self = this;
         try {
-          const self = this;
+          self.is_pending = true;
           const response = await fetch(`${apiPath}check-inventory`, {
             method: "POST",
             headers: {
@@ -121,13 +124,10 @@
             },
           });
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
           const data = await response.json();
           self.dataInventory = data?.datas;
           self.showInventory = "active";
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "แสดงไอเทมสำเร็จ",
@@ -135,6 +135,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -146,7 +147,6 @@
       },
       clickHideInventory: function () {
         const self = this;
-        console.log(self.showInventory);
         self.showInventory = "inactive";
         return Swal.fire({
           icon: "success",
@@ -156,8 +156,10 @@
         });
       },
       ItemToHand: async function (nameItem) {
+        const self = this;
         try {
-          const response = await fetch(`${apiPath}hold-item`, {
+          self.is_pending = true;
+          await fetch(`${apiPath}hold-item`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -166,9 +168,8 @@
               name: nameItem,
             }),
           });
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "ถือไอเทมสำเร็จ",
@@ -176,6 +177,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -186,8 +188,10 @@
         }
       },
       dropItem: async function (nameItem, quantity) {
+        const self = this;
         try {
-          const response = await fetch(`${apiPath}drop-item`, {
+          self.is_pending = true;
+          await fetch(`${apiPath}drop-item`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -197,9 +201,8 @@
               count: quantity,
             }),
           });
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "โยนไอเทมสำเร็จ",
@@ -207,6 +210,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -218,7 +222,6 @@
       },
       showModalSwal(item) {
         const self = this;
-
         Swal.fire({
           title: "กรุณากรอกข้อมูล",
           html: `
@@ -252,19 +255,19 @@
         });
       },
       ToggleFarmPumpkin: async function () {
+        const self = this;
         try {
-          const self = this;
           self.isEnabled = !self.isEnabled;
           self.farmMode = "pumpkin_farm";
-          const response = await fetch(`${apiPath}farm-pumpkin`, {
+          self.is_pending = true;
+          await fetch(`${apiPath}farm-pumpkin`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
           });
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+
+          self.is_pending = false;
           Swal.fire({
             icon: "success",
             title: "เปิดใช้งานออโต้ฟาร์มฟักทองสำเร็จ",
@@ -272,6 +275,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -282,19 +286,19 @@
         }
       },
       ToggleFarmWheat: async function () {
+        const self = this;
         try {
-          const self = this;
           self.isEnabled = !self.isEnabled;
           self.farmMode = "wheat_farm";
+          self.is_pending = true;
           const response = await fetch(`${apiPath}farm-wheat`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
           });
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "เปิดใช้งานออโต้ฟาร์มข้าวสำเร็จ",
@@ -302,6 +306,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -312,7 +317,9 @@
         }
       },
       gotoSurvivalAmorycraft: async function () {
+        const self = this;
         try {
+          self.is_pending = true;
           const response = await fetch(`${apiPath}amory-join`, {
             method: "POST",
             headers: {
@@ -322,6 +329,7 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "เข้าสู่เซิร์ฟ Survival Amorycraft เรียบร้อย",
@@ -329,6 +337,7 @@
             timer: 1500,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
@@ -339,8 +348,9 @@
         }
       },
       getDataFromServer: async function () {
+        const self = this;
         try {
-          const self = this;
+          self.is_pending = true;
           const response = await fetch(`${apiPath}get-data`, {
             method: "POST",
             headers: {
@@ -354,7 +364,7 @@
           const data = await response.json();
 
           self.serverAddress = data?.ServerAddress;
-          console.log(self.serverAddress);
+          self.is_pending = false;
           return Swal.fire({
             icon: "success",
             title: "ยินดีต้อนรับครับ",
@@ -362,6 +372,7 @@
             timer: 2000,
           });
         } catch (error) {
+          self.is_pending = false;
           console.log(error);
           return Swal.fire({
             icon: "error",
