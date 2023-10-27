@@ -8,7 +8,7 @@
 
 
 ## วิธีการติดตั้งและใช้งาน
-NPM ใช้คำสั่งนี้
+Npm ใช้คำสั่งนี้
 ```bash
   cd botmcjs
   npm install
@@ -38,3 +38,7 @@ cd botmcjs
 node index.js
 ```
 จากนั้นเข้าตาม PORT_SERVER เช่น http://localhost:3000/
+
+## ตัวอย่าง
+
+![alt text](https://media.discordapp.net/attachments/738757840621273210/1167321865941946418/image.png?ex=654db434&is=653b3f34&hm=131009cdcf2e56642b1bc60dc45854e2c73663e5857265b08537c1b2a79bbe90&=&width=1356&height=676)
