@@ -32,9 +32,8 @@ const createBot = () => {
       auth: "offline",
     });
 
+    bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
-    bot.on("error", (err) => console.log(err));
-    bot.on("end", createBot);
 
     return bot;
   } catch (error) {
@@ -43,6 +42,7 @@ const createBot = () => {
   }
 };
 
+bot.on("end", createBot);
 bot = createBot();
 
 bot.on("resourcePack", () => {

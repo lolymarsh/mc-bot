@@ -58,8 +58,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "ส่งคำสั่งสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       sendPosition: async function () {
@@ -82,8 +94,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "สั่งบอทเคลื่อนที่สำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       checkInventory: async function () {
@@ -102,16 +126,33 @@
 
           const data = await response.json();
           self.dataInventory = data?.datas;
-
           self.showInventory = "active";
+          return Swal.fire({
+            icon: "success",
+            title: "แสดงไอเทมสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       clickHideInventory: function () {
         const self = this;
         console.log(self.showInventory);
         self.showInventory = "inactive";
+        return Swal.fire({
+          icon: "success",
+          title: "ซ่อนไอเทมเรียบร้อย",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       },
       ItemToHand: async function (nameItem) {
         try {
@@ -127,8 +168,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "ถือไอเทมสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       dropItem: async function (nameItem, quantity) {
@@ -146,8 +199,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "โยนไอเทมสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       showModalSwal(item) {
@@ -177,15 +242,10 @@
                 title: "ข้อผิดพลาด",
                 text: "คุณกรอกจำนวนเกินค่าที่มี",
               });
+              return;
             } else {
               await self.dropItem(name, quantity);
               await self.checkInventory();
-              Swal.fire({
-                icon: "success",
-                title: "โยนไอเทมสำเร็จ",
-                showConfirmButton: false,
-                timer: 1500,
-              });
             }
           }
         });
@@ -204,8 +264,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          Swal.fire({
+            icon: "success",
+            title: "เปิดใช้งานออโต้ฟาร์มฟักทองสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       ToggleFarmWheat: async function () {
@@ -222,8 +294,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "เปิดใช้งานออโต้ฟาร์มข้าวสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       gotoSurvivalAmorycraft: async function () {
@@ -237,8 +321,20 @@
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
+          return Swal.fire({
+            icon: "success",
+            title: "เข้าสู่เซิร์ฟ Survival Amorycraft เรียบร้อย",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
     },
