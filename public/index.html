@@ -119,6 +119,14 @@
             เช็คของในตัวบอท
           </button>
           <button
+            v-if="showInventory !== 'active'"
+            class="btn btn-primary mt-2 mx-2"
+            :disabled="is_pending"
+            @click="TestClick()"
+          >
+            เช็คข้อมูล
+          </button>
+          <button
             v-if="showInventory === 'active'"
             class="btn btn-primary mt-2"
             :disabled="is_pending"
@@ -133,6 +141,7 @@
             <p class="text-danger">
               ***เตือนอย่าโยนไวบอทจะเด้งและจำนวนชิ้นของไอเทมไม่ถูกอัพเดทถ้าโยนให้โยนหมดทีเดียว***
             </p>
+            <!-- CheckItem -->
             <div v-for="item in dataInventory">
               <div class="row">
                 <div class="col-md-6">
@@ -141,6 +150,13 @@
                   ></p>
                 </div>
                 <div class="col-md-6 text-end">
+                  <button
+                    class="btn btn-primary"
+                    :disabled="is_pending"
+                    @click="ItemToHandAndRightClick(item?.name)"
+                  >
+                    ถือของจากนั้นคลิกขวา
+                  </button>
                   <button
                     class="btn btn-primary mx-2"
                     :disabled="is_pending"
@@ -158,6 +174,7 @@
                 </div>
               </div>
             </div>
+            <!-- CheckItem -->
           </div>
           <div
             class="card bg-secondary p-3 mt-2"
@@ -165,7 +182,23 @@
           >
             <p>ไม่พบไอเทม</p>
           </div>
+
+          <!-- Window -->
+          <h1 class="text-center mt-2 mb-3">Window</h1>
+          <div class="card bg-secondary p-3">
+            <div class="row">
+              <div class="col-2" v-for="item in window_items">
+                <button
+                  @click="onClickShowdetailWindow(item.nbt)"
+                  class="btn btn-primary w-100 mb-2"
+                  type="button"
+                  v-text="'ช่องที่ '+item.slot"
+                ></button>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- Window -->
         <div class="mt-2">
           <h1 class="text-center mb-3">Option</h1>
           <div class="card bg-secondary p-3">
@@ -285,6 +318,41 @@
                 ลบตำแหน่ง
               </button>
             </div>
+            <!-- Command Loop -->
+            <div class="d-flex align-items-center mt-2">
+              <h1 class="text-start">ส่งคำสั่งหรือส่งแชทแบบลูป</h1>
+            </div>
+            <div class="input-group mt-1">
+              <input
+                type="text"
+                class="form-control"
+                v-model="loop_message"
+                placeholder="ส่งคำสั่งให้บอทหรือส่งข้อความไปในแชท"
+              />
+              <input
+                type="number"
+                v-model="loop_time"
+                class="form-control"
+                placeholder="เวลาที่จะให้ลูปเช่น 5 วินาที"
+              />
+              <button
+                v-if="is_enable_loop === false"
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendCommandLoop()"
+              >
+                เปิดใช้งานคำสั่ง
+              </button>
+              <button
+                v-if="is_enable_loop === true"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="sendCommandLoop()"
+              >
+                ปิดใช้งานคำสั่ง
+              </button>
+            </div>
+            <!-- Command Loop -->
             <!-- Button -->
             <div class="mt-2">
               <h1 class="text-start">ออโต้ฟาร์ม</h1>
@@ -349,6 +417,7 @@
           ></div>
         </div>
       </div>
+
       <!-- Modal -->
 
       <!-- Modal -->

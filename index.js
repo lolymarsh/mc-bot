@@ -62,11 +62,28 @@ bot.on("resourcePack", () => {
   bot.acceptResourcePack();
 });
 
+bot.on("windowOpen", async (window) => {
+  if (window.type === "minecraft:generic_9x6") {
+    console.log("Inventory 9x6 opened");
+    for (let i = 0; i < window.slots.length; i++) {
+      const slot = window.slots[i];
+      io.emit("window-opened", slot);
+      // if (slot) {
+      //   // console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
+      //   if (slot.nbt) {
+      //     // console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
+      //     io.emit("window-opened", slot.nbt);
+      //   }
+      // }
+    }
+  }
+});
+
 // Drop Item Auto
 setInterval(() => {
-  checkAndThrowItems("bamboo", 2176);
-  checkAndThrowItems("sugar_cane", 2176);
-}, 15000); // delay 15 sec
+  checkAndThrowItems("bamboo", 500);
+  checkAndThrowItems("sugar_cane", 500);
+}, 5000); // delay 15 sec
 // Drop Item Auto
 
 const checkAndThrowItems = async (itemName, amount) => {
@@ -94,7 +111,7 @@ const checkAndThrowItems = async (itemName, amount) => {
       async function processItems() {
         for (let i = 0; i < itemsWithMatchingName.length; i++) {
           bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
-          await new Promise((resolve) => setTimeout(resolve, 500)); // delay 1 sec
+          await new Promise((resolve) => setTimeout(resolve, 100)); // delay 1 sec
         }
         return io.emit("chat-bot", `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`);
       }
@@ -223,6 +240,47 @@ app.post("/command", (req, res) => {
 });
 // Command to bot
 
+// Command with loop
+let isCommandLoopEnable = false;
+let commandIntervalTime = false;
+app.post("/loop-command", (req, res) => {
+  try {
+    const { message, loop_time } = req.body;
+    if (isCommandLoopEnable !== true) {
+      isCommandLoopEnable = true;
+      commandIntervalTime = setInterval(() => {
+        basiccommand.CommandTodo(bot, message);
+      }, loop_time * 1000);
+    } else {
+      isCommandLoopEnable = false;
+      clearInterval(commandIntervalTime);
+    }
+
+    if (message.includes("/")) {
+      io.emit(
+        "chat-bot",
+        `บอทใช้คำสั่ง : ${message} เวลาในการลูปทุกๆ ${loop_time} วินาที`
+      );
+    } else {
+      io.emit(
+        "chat-bot",
+        `บอทพิมพ์ : ${message} เวลาในการลูปทุกๆ ${loop_time} วินาที`
+      );
+    }
+    return res.status(200).json({
+      message: "Command Loop",
+      status: true,
+    });
+  } catch (error) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Command with loop
+
 // Position TO GO
 app.post("/send-pos", (req, res) => {
   try {
@@ -349,7 +407,28 @@ app.post("/hold-item", async (req, res) => {
 });
 // Hold Item
 
-// Hold Item
+// Hold Item And Right Click
+app.post("/hold-item-right-click", async (req, res) => {
+  const { name } = req.body;
+  try {
+    await bot.equip(bot.registry.itemsByName[name].id, "hand");
+    await bot.activateItem();
+    io.emit("chat-bot", `บอทคลิกขวาที่ไอเทม ${name}`);
+    return res.status(200).json({
+      message: "Hold Item",
+      status: true,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Hold Item And Right Click
+
+// Drop Item
 app.post("/drop-item", async (req, res) => {
   const { name, count } = req.body;
   try {
@@ -367,4 +446,4 @@ app.post("/drop-item", async (req, res) => {
     });
   }
 });
-// Hold Item
+// Drop Item

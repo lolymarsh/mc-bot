@@ -15,6 +15,10 @@
         is_pending: false,
         inputs: [],
         inputsPos: [],
+        window_items: [],
+        loop_message: "",
+        loop_time: "",
+        is_enable_loop: false,
       };
     },
     methods: {
@@ -80,6 +84,12 @@
           chatMessageFarmWheat.classList.add("text-warning");
           chatFarmWheat.appendChild(chatMessageFarmWheat);
         });
+
+        socket.on("window-opened", (message) => {
+          if (message) {
+            self.window_items.push(message);
+          }
+        });
       },
       sendCommand: async function (item) {
         const self = this;
@@ -100,6 +110,49 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ message: item.message }),
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "ส่งคำสั่งสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      sendCommandLoop: async function () {
+        const self = this;
+        try {
+          self.is_enable_loop = !self.is_enable_loop;
+          if (self.loop_message === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ข้อความก่อนส่ง",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_pending = true;
+          await fetch(`${apiPath}loop-command`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: self.loop_message,
+              loop_time: self.loop_time,
+            }),
           });
 
           self.is_pending = false;
@@ -208,6 +261,32 @@
           });
         }
       },
+      checkWindow: async function () {
+        const self = this;
+        try {
+          self.is_pending = true;
+          const response = await fetch(`${apiPath}check-window`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          const data = await response.json();
+          console.log(data);
+          self.is_pending = false;
+          return;
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
       clickHideInventory: function () {
         const self = this;
         self.showInventory = "inactive";
@@ -230,6 +309,38 @@
           return Swal.fire({
             icon: "success",
             title: "ถือไอเทมสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      ItemToHandAndRightClick: async function (nameItem) {
+        const self = this;
+        try {
+          self.is_pending = true;
+          await fetch(`${apiPath}hold-item-right-click`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: nameItem,
+            }),
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "ถือและคลิกขวาสำเร็จ",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -747,6 +858,24 @@
             return;
           }
         });
+      },
+      onClickShowdetailWindow: function (item) {
+        try {
+          console.log(item);
+
+          const nameValue = item.name.value.Name.value;
+          const loreValue = item.lore.value;
+
+          console.log(nameValue);
+          console.log(loreValue);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      TestClick() {
+        const self = this;
+
+        console.log(self.window_items);
       },
     },
     mounted: async function () {
