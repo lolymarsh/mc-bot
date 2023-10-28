@@ -184,7 +184,7 @@
           </div>
 
           <!-- Window -->
-          <h1 class="text-center mt-2 mb-3">Window</h1>
+          <h1 class="text-center mt-2 mb-3">Window Slot</h1>
           <div class="card bg-secondary p-3">
             <div class="row">
               <div class="col-2" v-for="item in window_items">
@@ -199,6 +199,76 @@
           </div>
         </div>
         <!-- Window -->
+        <!-- Sort Loop -->
+        <div>
+          <h1 class="text-center mb-3">Loop Select</h1>
+          <div class="card bg-secondary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <h1 class="text-start">สร้างลูปการใช้งานบอท</h1>
+              </div>
+              <div>
+                <button
+                  v-if="loop_function.length >= 2"
+                  class="btn btn-success"
+                >
+                  <i class="fa-solid fa-play"></i>
+                  เริ่มทำงานลูป
+                </button>
+              </div>
+            </div>
+            <div class="mt-1 mb-2">
+              <button
+                @click="showModalAddLoopFuncSendCommand()"
+                class="btn btn-success"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งคำสั่งหรือส่งแชท
+              </button>
+            </div>
+            <div>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="text-start">ฟังชั่นลูป</th>
+                    <th class="text-start">ค่าที่ทำ</th>
+                    <th class="text-end">ดีเลย์</th>
+                    <th class="text-end">การกระทำ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in loop_function">
+                    <td class="text-start">
+                      <span v-text="item.name_th"></span>
+                    </td>
+                    <td class="text-start">
+                      <span v-text="item.name_th"></span>
+                    </td>
+                    <td class="text-end">
+                      <span v-text="item.delay_function + 'มิลลิวินาที'"></span>
+                    </td>
+                    <td class="text-end">
+                      <button
+                        @click="showModalAddLoopFuncSendCommand(item, index)"
+                        class="btn btn-primary mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        @click="deleteLoopfunctoLocal(index)"
+                        class="btn btn-danger"
+                      >
+                        ลบ
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Sort Loop -->
+        <!-- Option -->
         <div class="mt-2">
           <h1 class="text-center mb-3">Option</h1>
           <div class="card bg-secondary p-3">
@@ -484,6 +554,7 @@
             </div>
           </div>
         </div>
+        <!-- Option -->
         <!-- FarmPumpkin -->
         <div
           v-if="isEnabled == true && farmMode == 'pumpkin_farm'"

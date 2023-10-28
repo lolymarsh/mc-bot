@@ -29,6 +29,8 @@
         is_enable_auto_left_click: false,
         disable_auto_left_click_input: false,
         disable_loop_command_input: false,
+        text_enabled: false,
+        loop_function: [],
       };
     },
     methods: {
@@ -1089,8 +1091,6 @@
           self.inputsFacePos = [];
         }
 
-        console.log(item);
-
         self.inputsFacePos.push({
           name: item.name,
           x_pos: item.x_pos,
@@ -1161,8 +1161,6 @@
       },
       onClickShowdetailWindow: function (item) {
         try {
-          console.log(item);
-
           const nameValue = item.name.value.Name.value;
           const loreValue = item.lore.value;
 
@@ -1172,10 +1170,255 @@
           console.log(error);
         }
       },
-      TestClick() {
+      showModalAddLoopFuncSendCommand(item, index) {
         const self = this;
 
-        console.log(self.window_items);
+        if (item) {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="x_pos" type="text" class="swal2-input" value="${item.x_pos}" placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="text" class="swal2-input" value="${item.y_pos}" placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="text" class="swal2-input" value="${item.z_pos}" placeholder="ตำแหน่ง Z">
+        <input id="delay_func" type="text" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ (ms)">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const xpos = document.getElementById("x_pos").value;
+              const ypos = document.getElementById("y_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendPosition",
+                name_th: "ส่งตำแหน่งให้บอทเดิน",
+                x_pos: xpos,
+                y_pos: ypos,
+                z_pos: zpos,
+                delay_function: delay_function,
+              };
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "กรุณากรอกข้อมูล",
+            html: `
+        <div class="swal-content">
+        <input id="x_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Z">
+        <input id="delay_func" type="text" class="swal2-input" placeholder="ดีเลย์ (ms)">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const xpos = document.getElementById("x_pos").value;
+              const ypos = document.getElementById("y_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendPosition",
+                name_th: "ส่งตำแหน่งให้บอทเดิน",
+                x_pos: xpos,
+                y_pos: ypos,
+                z_pos: zpos,
+                delay_function: delay_function,
+              };
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
+      addLoopfunctoLocal(item) {
+        const self = this;
+
+        if (item.delay_function === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณาระบุดีเลย์",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        // sendPosition
+        if (item.name_func === "sendPosition") {
+          if (item.x_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง X",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          if (item.y_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Y",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          if (item.z_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Z",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            x_pos: item.x_pos,
+            y_pos: item.y_pos,
+            z_pos: item.z_pos,
+            delay_function: item.delay_function,
+          });
+        }
+        // sendPosition
+
+        localStorage.setItem(
+          "loopFunctionStorage",
+          JSON.stringify(self.loop_function)
+        );
+      },
+      editLoopfunctoLocal(item, index) {
+        const self = this;
+
+        if (item.delay_function === "") {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณาระบุดีเลย์",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        // sendPosition
+        if (item.name_func === "sendPosition") {
+          if (item.x_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง X",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (item.y_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Y",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (item.z_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Z",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function[index] = item;
+        }
+        // sendPosition
+
+        localStorage.setItem(
+          "loopFunctionStorage",
+          JSON.stringify(self.loop_function)
+        );
+      },
+      deleteLoopfunctoLocal(index) {
+        const self = this;
+        Swal.fire({
+          icon: "warning",
+          title: "คุณแน่ใจที่จะลบหรือไม่?",
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            self.loop_function.splice(index, 1);
+
+            localStorage.setItem(
+              "loopFunctionStorage",
+              JSON.stringify(self.loop_function)
+            );
+            return;
+          }
+        });
+      },
+      TimeSleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      },
+      LocalStorageSaveToVariable: async function () {
+        try {
+          const self = this;
+
+          const savedInputs = localStorage.getItem("commandInputs");
+          const savedInputsPosition = localStorage.getItem("PositionInputs");
+          const savedInputsFacePosition =
+            localStorage.getItem("FacePositionInputs");
+          const savedLoopFunc = localStorage.getItem("loopFunctionStorage");
+
+          if (savedInputs) {
+            // console.log(savedInputs);
+            self.inputs = await JSON.parse(savedInputs);
+          }
+
+          if (savedInputsPosition) {
+            self.inputsPos = await JSON.parse(savedInputsPosition);
+          }
+
+          if (savedLoopFunc) {
+            self.loop_function = await JSON.parse(savedLoopFunc);
+          }
+
+          if (
+            !savedInputsFacePosition ||
+            JSON.parse(savedInputsFacePosition).length === 0
+          ) {
+            const data = [
+              { name: "North", x_pos: "0", z_pos: "0" },
+              { name: "South", x_pos: "3", z_pos: "0" },
+              { name: "East", x_pos: "-1.5", z_pos: "0" },
+              { name: "West", x_pos: "1.5", z_pos: "0" },
+            ];
+            localStorage.setItem("FacePositionInputs", JSON.stringify(data));
+            self.inputsFacePos = data;
+          } else {
+            self.inputsFacePos = await JSON.parse(savedInputsFacePosition);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      TestClick: async function () {
+        const self = this;
+
+        self.text_enabled = true;
+
+        await self.TimeSleep(3000);
+
+        self.text_enabled = false;
       },
     },
     mounted: async function () {
@@ -1184,34 +1427,7 @@
         self.is_pending = true;
         await self.initWebSocket();
         await self.getDataFromServer();
-
-        const savedInputs = localStorage.getItem("commandInputs");
-        const savedInputsPosition = localStorage.getItem("PositionInputs");
-        const savedInputsFacePosition =
-          localStorage.getItem("FacePositionInputs");
-        if (savedInputs) {
-          self.inputs = JSON.parse(savedInputs);
-        }
-
-        if (savedInputsPosition) {
-          self.inputsPos = JSON.parse(savedInputsPosition);
-        }
-
-        if (
-          !savedInputsFacePosition ||
-          JSON.parse(savedInputsFacePosition).length === 0
-        ) {
-          const data = [
-            { name: "North", x_pos: "0", z_pos: "0" },
-            { name: "South", x_pos: "3", z_pos: "0" },
-            { name: "East", x_pos: "-1.5", z_pos: "0" },
-            { name: "West", x_pos: "1.5", z_pos: "0" },
-          ];
-          localStorage.setItem("FacePositionInputs", JSON.stringify(data));
-          self.inputsFacePos = data;
-        } else {
-          self.inputsFacePos = JSON.parse(savedInputsFacePosition);
-        }
+        await self.LocalStorageSaveToVariable();
       } catch (error) {
         console.log(error);
       } finally {
