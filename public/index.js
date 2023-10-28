@@ -1371,6 +1371,71 @@
           });
         }
       },
+      showModalAddLoopFuncAutoLeftClick(item, index) {
+        const self = this;
+
+        if (item) {
+          Swal.fire({
+            title: "เปิด/ปิด ออโต้คลิกซ้าย",
+            html: `
+        <div class="swal-content">
+        <input id="delay_for_click_func" type="number" class="swal2-input" value="${item.delay_forclick_function}" placeholder="ดีเลย์ของการคลิก (ms)">
+        <input id="delay_func" type="number" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const delay_forclick_function = document.getElementById(
+                "delay_for_click_func"
+              ).value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "ToggleAutoLeftClick",
+                name_th: "เปิด/ปิด ออโต้คลิกซ้าย",
+                delay_forclick_function: delay_forclick_function,
+                delay_function: delay_function,
+              };
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="delay_for_click_func" type="number" class="swal2-input" placeholder="ดีเลย์ของการคลิก (ms)">
+        <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const delay_forclick_function = document.getElementById(
+                "delay_for_click_func"
+              ).value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "ToggleAutoLeftClick",
+                name_th: "เปิด/ปิด ออโต้คลิกซ้าย",
+                delay_forclick_function: delay_forclick_function,
+                delay_function: delay_function,
+              };
+
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
       addLoopfunctoLocal(item) {
         const self = this;
 
@@ -1478,6 +1543,26 @@
         }
         // sendFacePosition
 
+        // ToggleAutoLeftClick
+        if (item.name_func === "ToggleAutoLeftClick") {
+          if (item.delay_forclick_function === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกดีเลย์การคลิก",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            delay_forclick_function: item.delay_forclick_function,
+            delay_function: item.delay_function,
+          });
+        }
+        // ToggleAutoLeftClick
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1575,6 +1660,21 @@
         }
         // sendFacePosition
 
+        // ToggleAutoLeftClick
+        if (item.name_func === "ToggleAutoLeftClick") {
+          if (item.delay_forclick_function === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกดีเลย์การคลิก",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function[index] = item;
+        }
+        // ToggleAutoLeftClick
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1621,6 +1721,11 @@
             return `X: ${item.x_pos} Z: ${item.z_pos}`;
           }
           // sendFacePosition
+          // ToggleAutoLeftClick
+          if (item.name_func === "ToggleAutoLeftClick") {
+            return `One Click Per ${item.delay_forclick_function} ms`;
+          }
+          // ToggleAutoLeftClick
         } catch (error) {
           console.log(error);
         }
@@ -1662,6 +1767,15 @@
                 await self.TimeSleep(item.delay_function);
               }
 
+              if (item.name_func === "ToggleAutoLeftClick") {
+                const dataToSend = {
+                  delay_left_click: item.delay_forclick_function,
+                };
+
+                await self.ToggleAutoLeftClickForLoop(dataToSend);
+                await self.TimeSleep(item.delay_function);
+              }
+
               if (item.name_func === "") {
                 break;
               }
@@ -1673,6 +1787,60 @@
           }
         } catch (error) {
           console.log(error);
+        }
+      },
+      ToggleAutoLeftClickForLoop: async function (item) {
+        const self = this;
+        try {
+          if (item.delay_left_click === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ดีเลย์ก่อนเปิดใช้งาน",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_enable_auto_left_click = !self.is_enable_auto_left_click;
+
+          self.is_pending = true;
+          await fetch(`${apiPath}autoclick-left`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              delay: item.delay_left_click,
+            }),
+          });
+
+          self.is_pending = false;
+          if (self.is_enable_auto_left_click) {
+            self.disable_auto_left_click_input = true;
+            return Swal.fire({
+              icon: "success",
+              title: "เปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            self.disable_auto_left_click_input = false;
+            Swal.fire({
+              icon: "success",
+              title: "ปิดใช้งานสำเร็จ",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         }
       },
       TimeSleep(ms) {

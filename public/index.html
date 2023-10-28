@@ -248,6 +248,13 @@
                 <i class="fa-solid fa-plus fa-lg"></i>
                 คลิกเพื่อเพิ่ม ส่งตำแหน่งหน้าให้บอทหันหน้า
               </button>
+              <button
+                @click="showModalAddLoopFuncAutoLeftClick()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม เปิด/ปิด ออโต้คลิกซ้าย
+              </button>
             </div>
             <div>
               <table class="table table-striped">
@@ -290,6 +297,13 @@
                       <button
                         v-if="item.name_func === 'sendFacePosition'"
                         @click="showModalAddLoopFuncSendFacePos(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'ToggleAutoLeftClick'"
+                        @click="showModalAddLoopFuncAutoLeftClick(item, index)"
                         class="btn btn-warning mx-2"
                       >
                         แก้ไข
