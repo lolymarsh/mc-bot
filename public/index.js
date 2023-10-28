@@ -31,6 +31,8 @@
         disable_loop_command_input: false,
         text_enabled: false,
         loop_function: [],
+        reqSortable: [],
+        sortableData: [],
         is_Loop_function_enabled: false,
       };
     },
@@ -1888,6 +1890,39 @@
           console.log(error);
         }
       },
+      initializeSortable: function () {
+        const self = this;
+        let containers = document.querySelectorAll(".draggable-zone");
+        if (containers.length === 0) {
+          return false;
+        }
+
+        if (self.loop_function.length > 0) {
+          self.sortableData = new Sortable(containers[0], {
+            draggable: ".draggable",
+            handle: ".draggable .draggable-handle",
+            mirror: {
+              appendTo: "body",
+              constrainDimensions: true,
+            },
+            onEnd: async function () {
+              let slides = document.getElementsByClassName("draggable");
+              let newArr = [];
+
+              for (let i = 0; i < slides.length; i++) {
+                let index = parseInt(slides[i].getAttribute("data-index"));
+                newArr.push(self.loop_function[index]);
+              }
+
+              const item = localStorage.setItem(
+                "loopFunctionStorage",
+                JSON.stringify(newArr)
+              );
+              self.loop_function = await JSON.parse(item);
+            },
+          });
+        }
+      },
       TestClick: async function () {
         const self = this;
 
@@ -1905,6 +1940,7 @@
         await self.initWebSocket();
         await self.getDataFromServer();
         await self.LocalStorageSaveToVariable();
+        await self.initializeSortable();
       } catch (error) {
         console.log(error);
       } finally {

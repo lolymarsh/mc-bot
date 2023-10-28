@@ -49,6 +49,14 @@
           transform: rotate(360deg);
         }
       }
+
+      .draggable-handle {
+        cursor: grab;
+      }
+
+      .draggable-handle:active {
+        cursor: grabbing;
+      }
     </style>
     <!-- FONT -->
 
@@ -86,6 +94,20 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Swal -->
+    <!-- Draggable -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/draggable/1.0.1/draggable.min.js"
+      integrity="sha512-X0rTCVStb1VctZmXuT+IjzhwNfbMXg1Lli5swVDDLzfX8AB2vLKs3bWHiQM8S+ou8Zf3YxASPNSb7T3Qb41CWA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+      integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- Draggable -->
   </head>
 
   <body>
@@ -257,17 +279,25 @@
               </button>
             </div>
             <div>
-              <table class="table table-striped">
+              <table class="table table-striped draggable-zone">
                 <thead>
                   <tr>
+                    <th class="text-center">ลาก</th>
                     <th class="text-start">ฟังชั่นลูป</th>
                     <th class="text-start">ค่าที่ทำ</th>
                     <th class="text-end">ดีเลย์</th>
                     <th class="text-end">การกระทำ</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr v-for="(item, index) in loop_function">
+                <tbody
+                  class="draggable"
+                  v-for="(item, index) in loop_function"
+                  :data-index="index"
+                >
+                  <tr>
+                    <td class="text-center">
+                      <i class="fa-solid fa-hashtag draggable-handle"></i>
+                    </td>
                     <td class="text-start">
                       <span v-text="item.name_th"></span>
                     </td>
