@@ -209,11 +209,20 @@
               </div>
               <div>
                 <button
-                  v-if="loop_function.length >= 2"
+                  v-if="loop_function.length >= 2 && is_Loop_function_enabled === false"
                   class="btn btn-success"
+                  @click="ToggleLoopFunction()"
                 >
                   <i class="fa-solid fa-play"></i>
                   เริ่มทำงานลูป
+                </button>
+                <button
+                  v-if="loop_function.length >= 2 && is_Loop_function_enabled === true"
+                  class="btn btn-danger"
+                  @click="ToggleLoopFunction()"
+                >
+                  <i class="fa-solid fa-stop"></i>
+                  ปิดการทำงานลูป
                 </button>
               </div>
             </div>
@@ -224,6 +233,13 @@
               >
                 <i class="fa-solid fa-plus fa-lg"></i>
                 คลิกเพื่อเพิ่ม ส่งคำสั่งหรือส่งแชท
+              </button>
+              <button
+                @click="showModalAddLoopFuncSendLocation()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งตำแหน่งให้บอทเดิน
               </button>
             </div>
             <div>
@@ -242,15 +258,17 @@
                       <span v-text="item.name_th"></span>
                     </td>
                     <td class="text-start">
-                      <span v-text="item.name_th"></span>
+                      <span v-text="TextConvforLoopFunction(item)"></span>
                     </td>
                     <td class="text-end">
-                      <span v-text="item.delay_function + 'มิลลิวินาที'"></span>
+                      <span
+                        v-text="item.delay_function + ' มิลลิวินาที'"
+                      ></span>
                     </td>
                     <td class="text-end">
                       <button
                         @click="showModalAddLoopFuncSendCommand(item, index)"
-                        class="btn btn-primary mx-2"
+                        class="btn btn-warning mx-2"
                       >
                         แก้ไข
                       </button>
@@ -465,7 +483,7 @@
               />
               <button
                 v-if="is_enable_loop === false"
-                class="btn btn-primary"
+                class="btn btn-success"
                 :disabled="is_pending"
                 @click="sendCommandLoop()"
               >
@@ -495,7 +513,7 @@
               />
               <button
                 v-if="is_enable_auto_left_click === false"
-                class="btn btn-primary"
+                class="btn btn-success"
                 :disabled="is_pending"
                 @click="ToggleAutoLeftClick()"
               >
@@ -520,7 +538,7 @@
               <div class="d-flex justify-content-between">
                 <button
                   v-if="isEnabled == false"
-                  class="btn btn-primary"
+                  class="btn btn-success"
                   :disabled="is_pending"
                   @click="ToggleFarmPumpkin()"
                 >
@@ -528,7 +546,7 @@
                 </button>
                 <button
                   v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
-                  class="btn btn-primary"
+                  class="btn btn-danger"
                   :disabled="is_pending"
                   @click="ToggleFarmPumpkin()"
                 >
@@ -536,7 +554,7 @@
                 </button>
                 <button
                   v-if="isEnabled == false"
-                  class="btn btn-primary"
+                  class="btn btn-success"
                   :disabled="is_pending"
                   @click="ToggleFarmWheat()"
                 >
@@ -544,7 +562,7 @@
                 </button>
                 <button
                   v-if="isEnabled == true && farmMode == 'wheat_farm'"
-                  class="btn btn-primary"
+                  class="btn btn-danger"
                   :disabled="is_pending"
                   @click="ToggleFarmWheat()"
                 >

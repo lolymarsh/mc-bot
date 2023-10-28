@@ -31,6 +31,7 @@
         disable_loop_command_input: false,
         text_enabled: false,
         loop_function: [],
+        is_Loop_function_enabled: false,
       };
     },
     methods: {
@@ -1178,10 +1179,71 @@
             title: "รูปแบบการลูป",
             html: `
         <div class="swal-content">
-        <input id="x_pos" type="text" class="swal2-input" value="${item.x_pos}" placeholder="ตำแหน่ง X">
-        <input id="y_pos" type="text" class="swal2-input" value="${item.y_pos}" placeholder="ตำแหน่ง Y">
-        <input id="z_pos" type="text" class="swal2-input" value="${item.z_pos}" placeholder="ตำแหน่ง Z">
-        <input id="delay_func" type="text" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ (ms)">
+        <input id="message" type="text" class="swal2-input" value="${item.message}" placeholder="คำสั่ง">
+        <input id="delay_func" type="number" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const message = document.getElementById("message").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendCommand",
+                name_th: "ส่งคำสั่งหรือส่งแชท",
+                message: message,
+                delay_function: delay_function,
+              };
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="message" type="text" class="swal2-input" placeholder="คำสั่ง">
+        <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const message = document.getElementById("message").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendCommand",
+                name_th: "ส่งคำสั่งหรือส่งแชท",
+                message: message,
+                delay_function: delay_function,
+              };
+
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
+      showModalAddLoopFuncSendLocation(item, index) {
+        const self = this;
+
+        if (item) {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="x_pos" type="number" class="swal2-input" value="${item.x_pos}" placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="number" class="swal2-input" value="${item.y_pos}" placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="number" class="swal2-input" value="${item.z_pos}" placeholder="ตำแหน่ง Z">
+        <input id="delay_func" type="number" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ขั้นต่ำ 100ms">
     </div>`,
             showCancelButton: true,
             confirmButtonText: "ตกลง",
@@ -1209,13 +1271,13 @@
           });
         } else {
           Swal.fire({
-            title: "กรุณากรอกข้อมูล",
+            title: "รูปแบบการลูป",
             html: `
         <div class="swal-content">
-        <input id="x_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง X">
-        <input id="y_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Y">
-        <input id="z_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Z">
-        <input id="delay_func" type="text" class="swal2-input" placeholder="ดีเลย์ (ms)">
+        <input id="x_pos" type="number" class="swal2-input" placeholder="ตำแหน่ง X">
+        <input id="y_pos" type="number" class="swal2-input" placeholder="ตำแหน่ง Y">
+        <input id="z_pos" type="number" class="swal2-input" placeholder="ตำแหน่ง Z">
+        <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
     </div>`,
             showCancelButton: true,
             confirmButtonText: "ตกลง",
@@ -1249,6 +1311,15 @@
           return Swal.fire({
             icon: "error",
             title: "กรุณาระบุดีเลย์",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.delay_function < 100) {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณาระบุดีเลย์ให้เกิน 100 มิลลิวินาที",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -1291,6 +1362,25 @@
         }
         // sendPosition
 
+        // sendCommand
+        if (item.name_func === "sendCommand") {
+          if (item.message === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกคำสั่ง",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            message: item.message,
+            delay_function: item.delay_function,
+          });
+        }
+        // sendCommand
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1303,6 +1393,15 @@
           return Swal.fire({
             icon: "error",
             title: "กรุณาระบุดีเลย์",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+
+        if (item.delay_function < 100) {
+          return Swal.fire({
+            icon: "error",
+            title: "กรุณาระบุดีเลย์ให้เกิน 100 มิลลิวินาที",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -1341,6 +1440,20 @@
         }
         // sendPosition
 
+        // sendCommand
+        if (item.name_func === "sendCommand") {
+          if (item.message === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกคำสั่ง",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+          self.loop_function[index] = item;
+        }
+        // sendCommand
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1365,6 +1478,62 @@
             return;
           }
         });
+      },
+      TextConvforLoopFunction: function (item) {
+        try {
+          // sendPosition
+          if (item.name_func === "sendPosition") {
+            return `X: ${item.x_pos} Y: ${item.y_pos} Z: ${item.z_pos}`;
+          }
+          // sendPosition
+          // sendCommand
+          if (item.name_func === "sendCommand") {
+            if (item.message.includes("/")) {
+              return `คำสั่ง ${item.message}`;
+            } else {
+              return `พิมพ์ ${item.message}`;
+            }
+          }
+          // sendCommand
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      ToggleLoopFunction: async function () {
+        try {
+          const self = this;
+          self.is_Loop_function_enabled = !self.is_Loop_function_enabled;
+
+          // console.log(self.is_Loop_function_enabled);
+
+          while (self.is_Loop_function_enabled) {
+            for (const item of self.loop_function) {
+              if (item.name_func === "sendPosition") {
+                const dataToSend = {
+                  x_pos: item.x_pos,
+                  y_pos: item.y_pos,
+                  z_pos: item.z_pos,
+                };
+                await self.sendPosition(dataToSend);
+                await self.TimeSleep(item.delay_function);
+              }
+
+              if (item.name_func === "sendCommand") {
+                const dataToSend = {
+                  message: item.message,
+                };
+                await self.sendCommand(dataToSend);
+                await self.TimeSleep(item.delay_function);
+              }
+
+              if (self.is_Loop_function_enabled === false) {
+                break;
+              }
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
       },
       TimeSleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
