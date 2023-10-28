@@ -340,7 +340,9 @@ app.post("/send-face-pos", (req, res) => {
     // const currentYaw = bot.entity.yaw;
     // const currentPitch = bot.entity.pitch;
 
-    bot.look(Math.PI * pos_yaw, Math.PI * pos_pitch, false);
+    // console.log(pos_yaw);
+    // console.log(pos_pitch);
+    bot.look(pos_yaw, pos_pitch, false);
 
     io.emit("chat-bot", `บอทหันหน้าไป: Yaw ${pos_yaw} Pitch ${pos_pitch}`);
     return res.status(200).json({

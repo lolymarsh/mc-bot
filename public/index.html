@@ -241,6 +241,13 @@
                 <i class="fa-solid fa-plus fa-lg"></i>
                 คลิกเพื่อเพิ่ม ส่งตำแหน่งให้บอทเดิน
               </button>
+              <button
+                @click="showModalAddLoopFuncSendFacePos()"
+                class="btn btn-success"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งตำแหน่งหน้าให้บอทหันหน้า
+              </button>
             </div>
             <div>
               <table class="table table-striped">
@@ -267,7 +274,22 @@
                     </td>
                     <td class="text-end">
                       <button
+                        v-if="item.name_func === 'sendCommand'"
                         @click="showModalAddLoopFuncSendCommand(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'sendPosition'"
+                        @click="showModalAddLoopFuncSendLocation(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'sendFacePosition'"
+                        @click="showModalAddLoopFuncSendFacePos(item, index)"
                         class="btn btn-warning mx-2"
                       >
                         แก้ไข

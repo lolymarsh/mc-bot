@@ -1304,6 +1304,73 @@
           });
         }
       },
+      showModalAddLoopFuncSendFacePos(item, index) {
+        const self = this;
+
+        if (item) {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="x_pos" type="text" class="swal2-input" value="${item.x_pos}" placeholder="ตำแหน่ง Yaw">
+        <input id="z_pos" type="text" class="swal2-input" value="${item.z_pos}" placeholder="ตำแหน่ง Pitch">
+        <input id="delay_func" type="number" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const xpos = document.getElementById("x_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendFacePosition",
+                name_th: "ส่งตำแหน่งหน้าให้บอทหันหน้า",
+                x_pos: xpos,
+                z_pos: zpos,
+                delay_function: delay_function,
+              };
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "รูปแบบการลูป",
+            html: `
+        <div class="swal-content">
+        <input id="x_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Yaw">
+        <input id="z_pos" type="text" class="swal2-input" placeholder="ตำแหน่ง Pitch">
+        <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const xpos = document.getElementById("x_pos").value;
+              const zpos = document.getElementById("z_pos").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "sendFacePosition",
+                name_th: "ส่งตำแหน่งหน้าให้บอทหันหน้า",
+                x_pos: xpos,
+                z_pos: zpos,
+                delay_function: delay_function,
+              };
+
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
       addLoopfunctoLocal(item) {
         const self = this;
 
@@ -1381,6 +1448,36 @@
         }
         // sendCommand
 
+        // sendFacePosition
+        if (item.name_func === "sendFacePosition") {
+          if (item.x_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง X",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (item.z_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Z",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            x_pos: item.x_pos,
+            z_pos: item.z_pos,
+            delay_function: item.delay_function,
+          });
+        }
+        // sendFacePosition
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1454,6 +1551,30 @@
         }
         // sendCommand
 
+        // sendFacePosition
+        if (item.name_func === "sendFacePosition") {
+          if (item.x_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง X",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          if (item.z_pos === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณากรอกตำแหน่ง Z",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function[index] = item;
+        }
+        // sendFacePosition
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1495,6 +1616,11 @@
             }
           }
           // sendCommand
+          // sendFacePosition
+          if (item.name_func === "sendFacePosition") {
+            return `X: ${item.x_pos} Z: ${item.z_pos}`;
+          }
+          // sendFacePosition
         } catch (error) {
           console.log(error);
         }
@@ -1524,6 +1650,20 @@
                 };
                 await self.sendCommand(dataToSend);
                 await self.TimeSleep(item.delay_function);
+              }
+
+              if (item.name_func === "sendFacePosition") {
+                const dataToSend = {
+                  x_pos: item.x_pos,
+                  z_pos: item.z_pos,
+                };
+
+                await self.sendFacePosition(dataToSend);
+                await self.TimeSleep(item.delay_function);
+              }
+
+              if (item.name_func === "") {
+                break;
               }
 
               if (self.is_Loop_function_enabled === false) {
