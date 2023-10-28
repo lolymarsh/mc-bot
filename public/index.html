@@ -201,7 +201,7 @@
         <!-- Window -->
         <!-- Sort Loop -->
         <div>
-          <h1 class="text-center mb-3">Loop Select</h1>
+          <h1 class="text-center mb-3">Loop</h1>
           <div class="card bg-secondary p-3">
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center">
@@ -209,7 +209,7 @@
               </div>
               <div>
                 <button
-                  v-if="loop_function.length >= 2 && is_Loop_function_enabled === false"
+                  v-if="loop_function.length >= 1 && is_Loop_function_enabled === false"
                   class="btn btn-success"
                   @click="ToggleLoopFunction()"
                 >
@@ -217,7 +217,7 @@
                   เริ่มทำงานลูป
                 </button>
                 <button
-                  v-if="loop_function.length >= 2 && is_Loop_function_enabled === true"
+                  v-if="loop_function.length >= 1 && is_Loop_function_enabled === true"
                   class="btn btn-danger"
                   @click="ToggleLoopFunction()"
                 >
