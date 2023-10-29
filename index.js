@@ -546,7 +546,7 @@ app.post("/watch-item-and-break", async (req, res) => {
         )
       );
 
-      await utils.TimeSleep(1000);
+      await utils.TimeSleep(100);
 
       if (targetBlock) {
         const targetPosition = targetBlock.position;
