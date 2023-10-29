@@ -7,7 +7,11 @@ const portServer = process.env.PORT_SERVER || 3000;
 const server = http.createServer(app);
 const io = socketIO(server);
 const mineflayer = require("mineflayer");
-const { pathfinder } = require("mineflayer-pathfinder");
+const {
+  pathfinder,
+  goals: { GoalNear, GoalGetToBlock },
+} = require("mineflayer-pathfinder");
+const Movements = require("mineflayer-pathfinder").Movements;
 
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
@@ -524,19 +528,36 @@ app.post("/drop-item", async (req, res) => {
 // Watch Item And break
 app.post("/watch-item-and-break", async (req, res) => {
   const { name } = req.body;
+  const defaultMove = new Movements(bot);
   try {
     const ids = [bot.registry.blocksByName[name].id];
-    const targetBlock = bot.findBlock({
-      matching: ids,
-      maxDistance: 4,
-    });
 
-    if (targetBlock) {
-      const targetPosition = targetBlock.position;
-      await bot.lookAt(targetPosition);
-      await utils.TimeSleep(400);
-      await bot.dig(targetBlock);
+    while (true) {
+      const targetBlock = bot.findBlock({
+        matching: ids,
+        maxDistance: 2,
+      });
+      await bot.pathfinder.setMovements(defaultMove);
+      await bot.pathfinder.setGoal(
+        new GoalGetToBlock(
+          targetBlock.position.x,
+          targetBlock.position.y,
+          targetBlock.position.z
+        )
+      );
+
+      await utils.TimeSleep(1000);
+
+      if (targetBlock) {
+        const targetPosition = targetBlock.position;
+        await bot.lookAt(targetPosition);
+        await utils.TimeSleep(200);
+        await bot.dig(targetBlock);
+      } else {
+        break;
+      }
     }
+
     io.emit("chat-bot", `บอทกำลังมองบล็อค ${name}`);
     return res.status(200).json({
       message: "Watch Item And break",
