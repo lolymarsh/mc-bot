@@ -32,7 +32,7 @@ const createBot = () => {
     bot = mineflayer.createBot({
       host: process.env.HOST_SERVER,
       username: process.env.BOT_NAME,
-      port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
+      // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
       auth: "offline", // microsoft || offline
     });
 
@@ -558,7 +558,7 @@ app.post("/watch-item-and-break", async (req, res) => {
       }
     }
 
-    io.emit("chat-bot", `บอทกำลังมองบล็อค ${name}`);
+    io.emit("chat-bot", `บอทกำลังทุบบล็อค ${name}`);
     return res.status(200).json({
       message: "Watch Item And break",
       status: true,
