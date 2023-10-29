@@ -145,6 +145,45 @@
           });
         }
       },
+      SendWatchAndBreak: async function (item) {
+        const self = this;
+        try {
+          if (item.name_block === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาใส่ชื่อบล็อค",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_pending = true;
+          await fetch(`${apiPath}watch-item-and-break`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: item.name_block }),
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "ส่งคำสั่งสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
       sendCommandLoop: async function () {
         const self = this;
         try {
@@ -1438,6 +1477,70 @@
           });
         }
       },
+      showModalAddLoopFuncWatchAndBreak(item, index) {
+        const self = this;
+
+        if (item) {
+          Swal.fire({
+            title: "ดูและทำลาย",
+            html: `
+        <div class="swal-content">
+        <input id="name_block" type="text" class="swal2-input" value="${item.name_block}" placeholder="ชื่อของบล็อค">
+        <input id="delay_func" type="number" class="swal2-input" value="${item.delay_function}" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+    </div>
+    <a href="https://minecraftitemids.com/" target="_blank">ชื่อของบล็อคอ้างอิงจากเว็บนี้</a>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const block_name_id = document.getElementById("name_block").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "WatchAndBreak",
+                name_th: "ดูและทำลาย",
+                name_block: block_name_id,
+                delay_function: delay_function,
+              };
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "ดูและทำลาย",
+            html: `
+        <div class="swal-content">
+        <input id="name_block" type="text" class="swal2-input" placeholder="ชื่อของบล็อค">
+        <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+        
+    </div>
+    <a href="https://minecraftitemids.com/" target="_blank">ชื่อของบล็อคอ้างอิงจากเว็บนี้</a>`,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const block_name_id = document.getElementById("name_block").value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              const itemToGive = {
+                name_func: "WatchAndBreak",
+                name_th: "ดูและทำลาย",
+                name_block: block_name_id,
+                delay_function: delay_function,
+              };
+
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
       addLoopfunctoLocal(item) {
         const self = this;
 
@@ -1565,6 +1668,26 @@
         }
         // ToggleAutoLeftClick
 
+        // WatchAndBreak
+        if (item.name_func === "WatchAndBreak") {
+          if (item.name_block === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาเลือกชื่อบล็อค",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            name_block: item.name_block,
+            delay_function: item.delay_function,
+          });
+        }
+        // WatchAndBreak
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1676,6 +1799,20 @@
           self.loop_function[index] = item;
         }
         // ToggleAutoLeftClick
+        // WatchAndBreak
+        if (item.name_func === "WatchAndBreak") {
+          if (item.name_block === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "กรุณาเลือกชื่อบล็อค",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.loop_function[index] = item;
+        }
+        // WatchAndBreak
 
         localStorage.setItem(
           "loopFunctionStorage",
@@ -1728,6 +1865,11 @@
             return `One Click Per ${item.delay_forclick_function} ms`;
           }
           // ToggleAutoLeftClick
+          // WatchAndBreak
+          if (item.name_func === "WatchAndBreak") {
+            return `บล็อคที่มอง ${item.name_block}`;
+          }
+          // WatchAndBreak
         } catch (error) {
           console.log(error);
         }
@@ -1775,6 +1917,15 @@
                 };
 
                 await self.ToggleAutoLeftClickForLoop(dataToSend);
+                await self.TimeSleep(item.delay_function);
+              }
+
+              if (item.name_func === "WatchAndBreak") {
+                const dataToSend = {
+                  name_block: item.name_block,
+                };
+
+                await self.SendWatchAndBreak(dataToSend);
                 await self.TimeSleep(item.delay_function);
               }
 

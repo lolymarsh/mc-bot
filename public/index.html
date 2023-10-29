@@ -277,6 +277,13 @@
                 <i class="fa-solid fa-plus fa-lg"></i>
                 คลิกเพื่อเพิ่ม เปิด/ปิด ออโต้คลิกซ้าย
               </button>
+              <button
+                @click="showModalAddLoopFuncWatchAndBreak()"
+                class="btn btn-success mt-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ดูและทำลาย
+              </button>
             </div>
             <div>
               <table class="table table-striped draggable-zone">
@@ -334,6 +341,13 @@
                       <button
                         v-if="item.name_func === 'ToggleAutoLeftClick'"
                         @click="showModalAddLoopFuncAutoLeftClick(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'WatchAndBreak'"
+                        @click="showModalAddLoopFuncWatchAndBreak(item, index)"
                         class="btn btn-warning mx-2"
                       >
                         แก้ไข

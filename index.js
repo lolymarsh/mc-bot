@@ -12,6 +12,7 @@ const { pathfinder } = require("mineflayer-pathfinder");
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 const commandbasic = require("./command/pathfinder");
+const utils = require("./utils/utils");
 
 server.listen(portServer, () => {
   console.log(`listening on *:${portServer}`);
@@ -519,3 +520,34 @@ app.post("/drop-item", async (req, res) => {
   }
 });
 // Drop Item
+
+// Watch Item And break
+app.post("/watch-item-and-break", async (req, res) => {
+  const { name } = req.body;
+  try {
+    const ids = [bot.registry.blocksByName[name].id];
+    const targetBlock = bot.findBlock({
+      matching: ids,
+      maxDistance: 4,
+    });
+
+    if (targetBlock) {
+      const targetPosition = targetBlock.position;
+      await bot.lookAt(targetPosition);
+      await utils.TimeSleep(400);
+      await bot.dig(targetBlock);
+    }
+    io.emit("chat-bot", `บอทกำลังมองบล็อค ${name}`);
+    return res.status(200).json({
+      message: "Watch Item And break",
+      status: true,
+    });
+  } catch (err) {
+    console.log("Watch Item And break", err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Watch Item And break
