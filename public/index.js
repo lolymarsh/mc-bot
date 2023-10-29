@@ -1201,17 +1201,6 @@
           }
         });
       },
-      onClickShowdetailWindow: function (item) {
-        try {
-          const nameValue = item.name.value.Name.value;
-          const loreValue = item.lore.value;
-
-          console.log(nameValue);
-          console.log(loreValue);
-        } catch (error) {
-          console.log(error);
-        }
-      },
       showModalAddLoopFuncSendCommand(item, index) {
         const self = this;
 
@@ -2073,6 +2062,44 @@
             },
           });
         }
+      },
+      sendClickSlotItem: async function (item) {
+        try {
+          console.log(item.slot);
+          // return;
+          if (item.slot === "") {
+            return Swal.fire({
+              icon: "error",
+              title: "ไม่เจอ Slot",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+
+          self.is_pending = true;
+          await fetch(`${apiPath}click-slot`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ slot: item.slot }),
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "ส่งคำสั่งสำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      clearDataWindowSlot: async function () {
+        const self = this;
+
+        self.window_items = [];
       },
       TestClick: async function () {
         const self = this;

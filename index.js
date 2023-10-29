@@ -577,3 +577,24 @@ app.post("/watch-item-and-break", async (req, res) => {
   }
 });
 // Watch Item And break
+
+// Click To Slot
+app.post("/click-slot", async (req, res) => {
+  const { slot } = req.body;
+  try {
+    console.log(`clicked ${slot}`);
+    await bot.clickWindow(slot, 0, 0);
+    io.emit("chat-bot", `บอทคลิกช่องที่ ${slot}`);
+    return res.status(200).json({
+      message: "Click To Slot",
+      status: true,
+    });
+  } catch (err) {
+    console.log("Click To Slot", err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Click To Slot
