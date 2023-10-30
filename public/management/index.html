@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minecraft</title>
+
+    <!-- FONT -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@1,9..40,100&family=Kanit:wght@300;400;500;600;700&display=swap");
+      * {
+        font-family: "Kanit", sans-serif;
+      }
+
+      #loader-eiei {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* สีพื้นหลังเทา */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999; /* ให้อยู่ด้านหน้าของหน้าจอ */
+      }
+
+      .spinner-container {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .spinner-border {
+        border: 4px solid #f3f3f3; /* สีเทา */
+        border-top: 4px solid #3498db; /* สีที่คุณต้องการ */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .draggable-handle {
+        cursor: grab;
+      }
+
+      .draggable-handle:active {
+        cursor: grabbing;
+      }
+    </style>
+    <!-- FONT -->
+
+    <!-- VUE V3 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.26/dist/vue.global.js"></script>
+    <script
+      src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+      integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Swal -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Swal -->
+    <!-- Draggable -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/draggable/1.0.1/draggable.min.js"
+      integrity="sha512-X0rTCVStb1VctZmXuT+IjzhwNfbMXg1Lli5swVDDLzfX8AB2vLKs3bWHiQM8S+ou8Zf3YxASPNSb7T3Qb41CWA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+      integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- Draggable -->
+  </head>
+
+  <body>
+    <div id="kt_app_root">
+      <div id="loader-eiei" v-if="is_pending">
+        <div class="spinner-container">
+          <div class="spinner-border" role="status"></div>
+          <span class="mt-2">กำลังโหลด...</span>
+        </div>
+      </div>
+      <div class="container mb-4">
+        <div class="mt-2">
+          <h1 class="text-center">Info</h1>
+          <div class="card bg-secondary p-3 mb-2">
+            <label for="username">ชื่อในเกม</label>
+            <input
+              v-model="username_from_server"
+              disabled
+              type="text"
+              class="form-control"
+            />
+            <label>ไอพีแอสเดรส</label>
+            <input
+              v-model="serverAddress"
+              disabled
+              type="text"
+              class="form-control"
+            />
+          </div>
+          <h1 class="text-center mb-3">Chat Game</h1>
+          <div
+            id="chat-box"
+            class="card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
+          <h1 class="text-center mt-2 mb-3">Chat Bot</h1>
+          <div
+            id="chat-bot"
+            class="card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
+          <button
+            v-if="showInventory !== 'active'"
+            class="btn btn-primary mt-2"
+            :disabled="is_pending"
+            @click="checkInventory()"
+          >
+            เช็คของในตัวบอท
+          </button>
+          <button
+            v-if="showInventory === 'active'"
+            class="btn btn-primary mt-2"
+            :disabled="is_pending"
+            @click="clickHideInventory()"
+          >
+            ซ่อนไอเทม
+          </button>
+          <button
+            v-if="window_items.length > 0"
+            class="btn btn-primary mt-2 mx-2"
+            :disabled="is_pending"
+            @click="clearDataWindowSlot()"
+          >
+            ล้างข้อมูลใน Window Slot
+          </button>
+          <div
+            class="card bg-secondary p-3 mt-2"
+            v-if="showInventory === 'active' && dataInventory.length > 0"
+          >
+            <p class="text-danger">
+              ***เตือนอย่าโยนไวบอทจะเด้งและจำนวนชิ้นของไอเทมไม่ถูกอัพเดทถ้าโยนให้โยนหมดทีเดียว***
+            </p>
+            <!-- CheckItem -->
+            <div v-for="item in dataInventory">
+              <div class="row">
+                <div class="col-md-6">
+                  <p
+                    v-text="'ชื่อ ' + item.displayName +' จำนวน ' + item.stackSize + ' ชิ้น'"
+                  ></p>
+                </div>
+                <div class="col-md-6 text-end">
+                  <button
+                    class="btn btn-primary"
+                    :disabled="is_pending"
+                    @click="ItemToHandAndRightClick(item?.name)"
+                  >
+                    ถือของจากนั้นคลิกขวา
+                  </button>
+                  <button
+                    class="btn btn-primary mx-2"
+                    :disabled="is_pending"
+                    @click="ItemToHand(item?.name)"
+                  >
+                    ถือของ
+                  </button>
+                  <button
+                    class="btn btn-primary"
+                    :disabled="is_pending"
+                    @click="showModalSwal(item)"
+                  >
+                    โยนของ
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- CheckItem -->
+          </div>
+          <div
+            class="card bg-secondary p-3 mt-2"
+            v-if="showInventory === 'active' && dataInventory.length === 0"
+          >
+            <p>ไม่พบไอเทม</p>
+          </div>
+
+          <!-- Window -->
+          <h1 class="text-center mt-2 mb-3">Window Slot</h1>
+          <div class="card bg-secondary p-3">
+            <div class="row">
+              <div class="col-2" v-for="item in window_items">
+                <button
+                  @click="sendClickSlotItem(item)"
+                  class="btn btn-primary w-100 mb-2"
+                  type="button"
+                  v-text="'ช่องที่ '+item.slot"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Window -->
+        <!-- Sort Loop -->
+        <div>
+          <h1 class="text-center mb-3">Loop</h1>
+          <div class="card bg-secondary p-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <h1 class="text-start">สร้างลูปการใช้งานบอท</h1>
+              </div>
+              <div>
+                <button
+                  v-if="loop_function.length >= 1 && is_Loop_function_enabled === false"
+                  class="btn btn-success"
+                  @click="ToggleLoopFunction()"
+                >
+                  <i class="fa-solid fa-play"></i>
+                  เริ่มทำงานลูป
+                </button>
+                <button
+                  v-if="loop_function.length >= 1 && is_Loop_function_enabled === true"
+                  class="btn btn-danger"
+                  @click="ToggleLoopFunction()"
+                >
+                  <i class="fa-solid fa-stop"></i>
+                  ปิดการทำงานลูป
+                </button>
+              </div>
+            </div>
+            <div class="mt-1 mb-2">
+              <button
+                @click="showModalAddLoopFuncSendCommand()"
+                class="btn btn-success"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งคำสั่งหรือส่งแชท
+              </button>
+              <button
+                @click="showModalAddLoopFuncSendLocation()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งตำแหน่งให้บอทเดิน
+              </button>
+              <button
+                @click="showModalAddLoopFuncSendFacePos()"
+                class="btn btn-success"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ส่งตำแหน่งหน้าให้บอทหันหน้า
+              </button>
+              <button
+                @click="showModalAddLoopFuncAutoLeftClick()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม เปิด/ปิด ออโต้คลิกซ้าย
+              </button>
+              <button
+                @click="showModalAddLoopFuncWatchAndBreak()"
+                class="btn btn-success mt-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม ดูและทำลาย
+              </button>
+              <button
+                @click="showModalAddLoopFuncControlState()"
+                class="btn btn-success mt-2 mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม Control State
+              </button>
+            </div>
+            <div>
+              <table class="table table-striped draggable-zone">
+                <thead>
+                  <tr>
+                    <th class="text-center">ลาก</th>
+                    <th class="text-start">ฟังชั่นลูป</th>
+                    <th class="text-start">ค่าที่ทำ</th>
+                    <th class="text-end">ดีเลย์</th>
+                    <th class="text-end">การกระทำ</th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="draggable"
+                  v-for="(item, index) in loop_function"
+                  :data-index="index"
+                >
+                  <tr>
+                    <td class="text-center">
+                      <i class="fa-solid fa-hashtag draggable-handle"></i>
+                    </td>
+                    <td class="text-start">
+                      <span v-text="item.name_th"></span>
+                    </td>
+                    <td class="text-start">
+                      <span v-text="TextConvforLoopFunction(item)"></span>
+                    </td>
+                    <td class="text-end">
+                      <span
+                        v-text="item.delay_function + ' มิลลิวินาที'"
+                      ></span>
+                    </td>
+                    <td class="text-end">
+                      <button
+                        v-if="item.name_func === 'sendCommand'"
+                        @click="showModalAddLoopFuncSendCommand(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'sendPosition'"
+                        @click="showModalAddLoopFuncSendLocation(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'sendFacePosition'"
+                        @click="showModalAddLoopFuncSendFacePos(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'ToggleAutoLeftClick'"
+                        @click="showModalAddLoopFuncAutoLeftClick(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'WatchAndBreak'"
+                        @click="showModalAddLoopFuncWatchAndBreak(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'StateControl'"
+                        @click="showModalAddLoopFuncControlState(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        @click="deleteLoopfunctoLocal(index)"
+                        class="btn btn-danger"
+                      >
+                        ลบ
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Sort Loop -->
+        <!-- Option -->
+        <div class="mt-2">
+          <h1 class="text-center mb-3">Option</h1>
+          <div class="card bg-secondary p-3">
+            <div v-if="serverAddress === 'play.amorycraft.com'">
+              <h1 class="text-start">หลังจากเข้าสู่ระบบ</h1>
+              <div class="input-group">
+                <button
+                  class="btn btn-primary"
+                  :disabled="is_pending"
+                  @click="gotoSurvivalAmorycraft()"
+                >
+                  เข้า Survival ของ Armorycraft
+                </button>
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <h1 class="text-start">ส่งคำสั่งหรือส่งแชท</h1>
+              <button
+                @click="showModalAddCommandInput()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม
+              </button>
+            </div>
+            <div
+              class="input-group mt-2"
+              v-for="(input, index) in inputs"
+              :key="index"
+            >
+              <span class="input-group-text" v-text="input.name"></span>
+              <input
+                v-model="input.message"
+                disabled
+                type="text"
+                class="form-control"
+                placeholder="ส่งคำสั่งให้บอทหรือส่งข้อความไปในแชท"
+              />
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendCommand(input)"
+              >
+                ส่งคำสั่ง
+              </button>
+              <button
+                class="btn btn-warning"
+                :disabled="is_pending"
+                @click="showModalAddCommandInput(input, index)"
+              >
+                แก้ไขคำสั่ง
+              </button>
+              <button
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="deleteInputCommand(index)"
+              >
+                ลบคำสั่ง
+              </button>
+            </div>
+            <!-- Postion -->
+            <div class="d-flex align-items-center">
+              <h1 class="text-start mt-2">ส่งตำแหน่งให้บอทเดิน</h1>
+              <button
+                @click="showModalAddPositionInput()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม
+              </button>
+            </div>
+            <div
+              class="input-group mt-2"
+              v-for="(input, index) in inputsPos"
+              :key="index"
+            >
+              <span class="input-group-text" v-text="input.name"></span>
+              <input
+                v-model="input.x_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง X"
+                disabled
+              />
+              <input
+                v-model="input.y_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Y"
+                disabled
+              />
+              <input
+                v-model="input.z_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Z"
+                disabled
+              />
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendPosition(input)"
+              >
+                ส่งตำแหน่ง
+              </button>
+              <button
+                class="btn btn-warning"
+                :disabled="is_pending"
+                @click="showModalAddPositionInput(input, index)"
+              >
+                แก้ไขตำแหน่ง
+              </button>
+              <button
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="deleteInputPosition(index)"
+              >
+                ลบตำแหน่ง
+              </button>
+            </div>
+            <!-- Position -->
+            <!-- Face Position -->
+            <div class="d-flex align-items-center">
+              <h1 class="text-start mt-2">ส่งตำแหน่งหน้าให้บอทหันหน้า</h1>
+              <button
+                @click="showModalAddFacePositionInput()"
+                class="btn btn-success mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม
+              </button>
+            </div>
+            <div
+              class="input-group mt-2"
+              v-for="(input, index) in inputsFacePos"
+              :key="index"
+            >
+              <span class="input-group-text" v-text="input.name"></span>
+              <input
+                v-model="input.x_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Yaw"
+                disabled
+              />
+              <input
+                v-model="input.z_pos"
+                type="number"
+                class="form-control"
+                placeholder="ตำแหน่ง Pitch"
+                disabled
+              />
+              <button
+                class="btn btn-primary"
+                :disabled="is_pending"
+                @click="sendFacePosition(input)"
+              >
+                ส่งตำแหน่ง
+              </button>
+              <button
+                v-if="input.name !== 'North' && input.name !== 'South' && input.name !== 'East' && input.name !== 'West'"
+                class="btn btn-warning"
+                :disabled="is_pending"
+                @click="showModalAddFacePositionInput(input, index)"
+              >
+                แก้ไขตำแหน่ง
+              </button>
+              <button
+                v-if="input.name !== 'North' && input.name !== 'South' && input.name !== 'East' && input.name !== 'West'"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="deleteInputFacePosition(index)"
+              >
+                ลบตำแหน่ง
+              </button>
+            </div>
+            <!-- Face Position -->
+            <!-- Command Loop -->
+            <div class="d-flex align-items-center mt-2">
+              <h1 class="text-start">ส่งคำสั่งหรือส่งแชทแบบลูป</h1>
+            </div>
+            <div class="input-group mt-1">
+              <input
+                type="text"
+                class="form-control"
+                v-model="loop_message"
+                placeholder="ส่งคำสั่งให้บอทหรือส่งข้อความไปในแชท"
+              />
+              <input
+                type="number"
+                v-model="loop_time"
+                class="form-control"
+                placeholder="เวลาที่จะให้ลูปเช่น 5 วินาที"
+              />
+              <button
+                v-if="is_enable_loop === false"
+                class="btn btn-success"
+                :disabled="is_pending"
+                @click="sendCommandLoop()"
+              >
+                เปิดใช้งาน
+              </button>
+              <button
+                v-if="is_enable_loop === true"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="sendCommandLoop()"
+              >
+                ปิดใช้งาน
+              </button>
+            </div>
+            <!-- Command Loop -->
+            <!-- AutoLeftClick -->
+            <div class="d-flex align-items-center mt-2">
+              <h1 class="text-start">เปิด/ปิด ออโต้คลิกซ้าย</h1>
+            </div>
+            <div class="input-group mt-1">
+              <input
+                type="number"
+                v-model="delay_left_click"
+                class="form-control"
+                :disabled="disable_auto_left_click_input"
+                placeholder="ดีเลย์ต่อการตี 1 ครั้ง แนะนำที่ 200"
+              />
+              <button
+                v-if="is_enable_auto_left_click === false"
+                class="btn btn-success"
+                :disabled="is_pending"
+                @click="ToggleAutoLeftClick()"
+              >
+                เปิดใช้งาน
+              </button>
+              <button
+                v-if="is_enable_auto_left_click === true"
+                class="btn btn-danger"
+                :disabled="is_pending"
+                @click="ToggleAutoLeftClick()"
+              >
+                ปิดใช้งาน
+              </button>
+            </div>
+            <!-- AutoLeftClick -->
+            <!-- Button -->
+            <div class="mt-2">
+              <h1 class="text-start">ออโต้ฟาร์ม</h1>
+              <p class="text-start text-danger">
+                ***ไม่ได้อัพเดทส่วนนี้เพิ่มมีแค่2ตัว***
+              </p>
+              <div class="d-flex justify-content-between">
+                <button
+                  v-if="isEnabled == false"
+                  class="btn btn-success"
+                  :disabled="is_pending"
+                  @click="ToggleFarmPumpkin()"
+                >
+                  เปิดใช้งานฟาร์ม Pumpkin
+                </button>
+                <button
+                  v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
+                  class="btn btn-danger"
+                  :disabled="is_pending"
+                  @click="ToggleFarmPumpkin()"
+                >
+                  ปิดใช้งานฟาร์ม Pumpkin
+                </button>
+                <button
+                  v-if="isEnabled == false"
+                  class="btn btn-success"
+                  :disabled="is_pending"
+                  @click="ToggleFarmWheat()"
+                >
+                  เปิดใช้งานฟาร์ม Wheat
+                </button>
+                <button
+                  v-if="isEnabled == true && farmMode == 'wheat_farm'"
+                  class="btn btn-danger"
+                  :disabled="is_pending"
+                  @click="ToggleFarmWheat()"
+                >
+                  ปิดใช้งานฟาร์ม Wheat
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Option -->
+        <!-- FarmPumpkin -->
+        <div
+          v-if="isEnabled == true && farmMode == 'pumpkin_farm'"
+          class="mt-2"
+        >
+          <h1 class="text-center">Pumpkin Chat</h1>
+          <div
+            id="chat-pumpkin"
+            class="mt-3 card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
+        </div>
+        <div v-if="isEnabled == true && farmMode == 'wheat_farm'" class="mt-2">
+          <h1 class="text-center">Wheat Chat</h1>
+          <div
+            id="chat-wheat"
+            class="mt-3 card bg-secondary p-3"
+            style="max-height: 300px; overflow-y: auto"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+
+      <!-- Modal -->
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./index.js"></script>
+  </body>
+</html>

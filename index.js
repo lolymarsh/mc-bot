@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
@@ -25,152 +24,221 @@ app.use(express.json());
 app.use(express.static("public"));
 
 let bot = null;
+let server_address_eiei = "";
+let username_eiei = "";
 
-const createBot = () => {
+// const createBot = () => {
+//   try {
+//     bot = mineflayer.createBot({
+//       host: process.env.HOST_SERVER,
+//       username: process.env.BOT_NAME,
+//       // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
+//       auth: "offline", // microsoft || offline
+//     });
+
+//     bot.loadPlugin(pathfinder);
+//     bot.loadPlugin(require("mineflayer-autoclicker"));
+//     bot.setMaxListeners(20);
+
+//     bot.on("end", createBot, () => {
+//       io.emit("chat-error", message);
+//     });
+//     return bot;
+//   } catch (error) {
+//     return console.log("createBot", error);
+//   }
+// };
+
+// CreateBot
+app.post("/create-bot", (req, res) => {
   try {
+    const { server_address, username } = req.body;
+
+    if (server_address == "") {
+      return res.status(400).json({
+        message: "server_address_is_required",
+        status: false,
+      });
+    }
+
+    if (username == "") {
+      return res.status(400).json({
+        message: "username_is_required",
+        status: false,
+      });
+    }
+
+    server_address_eiei = server_address;
+    username_eiei = username;
     bot = mineflayer.createBot({
-      host: process.env.HOST_SERVER,
-      username: process.env.BOT_NAME,
+      host: server_address_eiei,
+      username: username_eiei,
       // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
       auth: "offline", // microsoft || offline
     });
+
+    io.emit("chat-bot", "สร้างบอทสำเร็จ");
 
     bot.loadPlugin(pathfinder);
     bot.loadPlugin(require("mineflayer-autoclicker"));
     bot.setMaxListeners(20);
 
-    bot.on("end", createBot, () => {
+    bot.on("end", (message) => {
       io.emit("chat-error", message);
     });
-    return bot;
-  } catch (error) {
-    return console.log("createBot", error);
-  }
-};
 
-bot = createBot();
+    bot.on("messagestr", (message) => {
+      console.log(message);
+      io.emit("chat-message", message);
+    });
+    bot.on("kicked", (message) => {
+      console.log(message);
+      io.emit("chat-error", message);
+    });
+    bot.on("error", (message) => {
+      console.log(message);
+      io.emit("chat-error", message);
+    });
 
-bot.on("messagestr", (message) => {
-  console.log(message);
-  io.emit("chat-message", message);
-});
-bot.on("kicked", (message) => {
-  console.log(message);
-  io.emit("chat-error", message);
-});
-bot.on("error", (message) => {
-  console.log(message);
-  io.emit("chat-error", message);
-});
-
-// Search ResourcePack
-bot.on("resourcePack", async () => {
-  try {
-    await bot.acceptResourcePack();
-    console.log("Resource pack accepted");
-  } catch (error) {
-    console.log("Resource pack rejected");
-  }
-});
-// Search ResourcePack
-
-// AutoEat
-// bot.once("spawn", () => {
-//   bot.autoEat.options = {
-//     priority: "foodPoints",
-//     startAt: 14,
-//     bannedFood: [],
-//   };
-// });
-// bot.on("autoeat_started", () => {
-//   console.log("Auto Eat started!");
-// });
-
-// bot.on("autoeat_stopped", () => {
-//   console.log("Auto Eat stopped!");
-// });
-// AutoEat
-
-// Search Window
-bot.on("windowOpen", async (window) => {
-  if (window.type === "minecraft:generic_9x6") {
-    console.log("Inventory 9x6 opened");
-    for (let i = 0; i < window.slots.length; i++) {
-      const slot = window.slots[i];
-      io.emit("window-opened", slot);
-      // if (slot) {
-      //   // console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
-      //   if (slot.nbt) {
-      //     // console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
-      //     io.emit("window-opened", slot.nbt);
-      //   }
-      // }
-    }
-  }
-});
-// Search Window
-
-// Drop Item Auto
-setInterval(() => {
-  checkAndThrowItems("bamboo", 500);
-  checkAndThrowItems("sugar_cane", 500);
-}, 5000); // delay 15 sec
-const checkAndThrowItems = async (itemName, amount) => {
-  try {
-    const inventory = bot.inventory;
-    // const items = inventory.items();
-
-    // const totalItemCount = await items
-    //   .map((itemStack) => itemStack.count)
-    //   .reduce((acc, count) => acc + count, 0);
-
-    const itemsWithMatchingName = await inventory
-      .items()
-      .filter((itemStack) => itemStack.name === itemName);
-    const itemCount = await countItemsByName(inventory, itemName);
-
-    // console.log(amount);
-    // console.log(itemsWithMatchingName);
-    // console.log(totalItemCount);
-
-    // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
-
-    if (itemCount >= amount) {
-      io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
-      async function processItems() {
-        for (let i = 0; i < itemsWithMatchingName.length; i++) {
-          bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
-          await new Promise((resolve) => setTimeout(resolve, 100)); // delay 1 sec
-        }
-        return io.emit("chat-bot", `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`);
+    // Search ResourcePack
+    bot.on("resourcePack", async () => {
+      try {
+        await bot.acceptResourcePack();
+        console.log("Resource pack accepted");
+      } catch (error) {
+        console.log("Resource pack rejected");
       }
+    });
+    // Search ResourcePack
 
-      processItems();
-    }
+    // AutoEat
+    // bot.once("spawn", () => {
+    //   bot.autoEat.options = {
+    //     priority: "foodPoints",
+    //     startAt: 14,
+    //     bannedFood: [],
+    //   };
+    // });
+    // bot.on("autoeat_started", () => {
+    //   console.log("Auto Eat started!");
+    // });
+
+    // bot.on("autoeat_stopped", () => {
+    //   console.log("Auto Eat stopped!");
+    // });
+    // AutoEat
+
+    // Search Window
+    bot.on("windowOpen", async (window) => {
+      if (window.type === "minecraft:generic_9x6") {
+        console.log("Inventory 9x6 opened");
+        for (let i = 0; i < window.slots.length; i++) {
+          const slot = window.slots[i];
+          io.emit("window-opened", slot);
+          // if (slot) {
+          //   // console.log(`Slot ${i}: ${slot.name}, Count: ${slot.count}`);
+          //   if (slot.nbt) {
+          //     // console.log("NBT Data:", JSON.stringify(slot.nbt, null, 2));
+          //     io.emit("window-opened", slot.nbt);
+          //   }
+          // }
+        }
+      }
+    });
+    // Search Window
+
+    // Drop Item Auto
+    setInterval(() => {
+      checkAndThrowItems("bamboo", 500);
+      checkAndThrowItems("sugar_cane", 500);
+    }, 5000); // delay 15 sec
+    const checkAndThrowItems = async (itemName, amount) => {
+      try {
+        const inventory = bot.inventory;
+        // const items = inventory.items();
+
+        // const totalItemCount = await items
+        //   .map((itemStack) => itemStack.count)
+        //   .reduce((acc, count) => acc + count, 0);
+
+        const itemsWithMatchingName = await inventory
+          .items()
+          .filter((itemStack) => itemStack.name === itemName);
+        const itemCount = await countItemsByName(inventory, itemName);
+
+        // console.log(amount);
+        // console.log(itemsWithMatchingName);
+        // console.log(totalItemCount);
+
+        // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
+
+        if (itemCount >= amount) {
+          io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
+          async function processItems() {
+            for (let i = 0; i < itemsWithMatchingName.length; i++) {
+              bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
+              await new Promise((resolve) => setTimeout(resolve, 100)); // delay 1 sec
+            }
+            return io.emit(
+              "chat-bot",
+              `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`
+            );
+          }
+
+          processItems();
+        }
+      } catch (error) {
+        return console.log("checkAndThrowItems", error);
+      }
+    };
+    const countItemsByName = async (inventory, itemName) => {
+      const itemsWithMatchingName = await inventory
+        .items()
+        .filter((itemStack) => itemStack.name === itemName);
+      const itemCount = await itemsWithMatchingName.reduce(
+        (acc, itemStack) => acc + itemStack.count,
+        0
+      );
+      return itemCount;
+    };
+    // Drop Item Auto
+
+    return res.status(200).json({
+      message: "Create Bot Success",
+    });
   } catch (error) {
-    return console.log("checkAndThrowItems", error);
+    console.log("Drop Item Auto", error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
   }
-};
-const countItemsByName = async (inventory, itemName) => {
-  const itemsWithMatchingName = await inventory
-    .items()
-    .filter((itemStack) => itemStack.name === itemName);
-  const itemCount = await itemsWithMatchingName.reduce(
-    (acc, itemStack) => acc + itemStack.count,
-    0
-  );
-  return itemCount;
-};
-// Drop Item Auto
+});
+// CreateBot
 
 // Sent data to client
 app.post("/get-data", (req, res) => {
   try {
-    return res.status(200).json({
-      message: "Data From Server",
-      Username: process.env.BOT_NAME,
-      ServerAddress: process.env.HOST_SERVER,
-    });
+    if (bot === null) {
+      return res.status(400).json({
+        message: "Data From Server",
+        status: false,
+      });
+    } else {
+      if (username_eiei | (server_address_eiei == "")) {
+        return res.status(400).json({
+          message: "Error",
+          status: false,
+        });
+      }
+
+      return res.status(200).json({
+        message: "Data From Server",
+        status: true,
+        username: username_eiei,
+        serveraddress: server_address_eiei,
+      });
+    }
   } catch (error) {
     console.log("Drop Item Auto", error);
     return res.status(400).json({
@@ -654,4 +722,27 @@ app.post("/control-clear", async (req, res) => {
     });
   }
 });
-// setControlState
+// clearStateControl
+
+// ToggleDig
+// app.post("/toggle-dig", async (req, res) => {
+//   try {
+//     const targetBlock = bot.blockAtCursor();
+//     bot.dig(targetBlock, () => {
+//       console.log("บล็อกถูกขุดแล้ว");
+//     });
+
+//     io.emit("chat-bot", `บอทสั่ง`);
+//     return res.status(200).json({
+//       message: "ToggleDig",
+//       status: true,
+//     });
+//   } catch (err) {
+//     console.log("ToggleDig", err);
+//     return res.status(400).json({
+//       message: "Error",
+//       status: false,
+//     });
+//   }
+// });
+// ToggleDig
