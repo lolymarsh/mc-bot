@@ -22,7 +22,7 @@
 ```bash
 node index.js
 ```
-จากนั้นเข้าตาม PORT_SERVER เช่น http://localhost:3000/
+จากนั้นเข้า http://localhost:3000/
 
 ## ตัวอย่างเข้าใช้งาน
 
