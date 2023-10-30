@@ -85,7 +85,7 @@
             return Swal.fire({
               icon: "error",
               title:
-                "ไอพีแอสเดรสต้องมีอย่างน้อย 4 ตัวอักษรและบังคับเป็นภาษาอังกฤษ",
+                "ไอพีแอดเดรสต้องมีอย่างน้อย 4 ตัวอักษรและบังคับเป็นภาษาอังกฤษ",
               showConfirmButton: false,
               timer: 1500,
             });
@@ -95,7 +95,7 @@
             self.is_pending = false;
             return Swal.fire({
               icon: "error",
-              title: "กรุณากรอกไอพีแอสเดรส",
+              title: "กรุณากรอกไอพีแอดเดรส",
               showConfirmButton: false,
               timer: 1500,
             });
