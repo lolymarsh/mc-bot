@@ -1620,6 +1620,12 @@
             <input id="delay_func" type="number" class="swal2-input" value=${item.delay_function} placeholder="ดีเลย์ขั้นต่ำ 100ms">
         </div>
         `,
+            didOpen: (modalElement) => {
+              if (item) {
+                modalElement.querySelector("#state_control_status").value =
+                  item.state_control_status;
+              }
+            },
             showCancelButton: true,
             confirmButtonText: "ตกลง",
             cancelButtonText: "ยกเลิก",
@@ -1697,11 +1703,11 @@
               const delay_function =
                 document.getElementById("delay_func").value;
 
-              console.log(state_control_status);
+              // console.log(state_control_status);
 
               let itemToGive = {};
               if (state_control_status === "true") {
-                console.log("eeee");
+                // console.log("eeee");
                 itemToGive = {
                   name_func: "StateControl",
                   name_th: "เดินค้าง",
