@@ -6,30 +6,16 @@
 
 - [NodeJS](https://nodejs.org/en)
 
-
-## วิธีการติดตั้งและใช้งาน
-Npm ใช้คำสั่งนี้
+## Npm ใช้คำสั่งนี้
 ```bash
   cd botmcjs
   npm install
 ```
-Yarn ใช้คำสั่งนี้
+## Yarn ใช้คำสั่งนี้
 ```bash
   cd botmcjs
   yarn
 ```
-
-จากนั้นแก้ ip เซิร์ฟหรือเว็บที่ .env
-
-```bash
-  HOST_SERVER="Address เซิร์ฟเวอร์"
-  BOT_NAME="ชื่อตัวละคร"
-  PORT_SERVER="Port ที่จะรันเว็บ"
-  PORT_SERVER_MC="Port ของเซิร์ฟหากมี " 
-
-```
-  หากเซิร์ฟ Port ไม่มีให้ไปลบบรรทัด ที่มีคำว่า port: process.env.PORT_SERVER_MC || "",
-
   
 ## รันขึ้นเว็บ
 
