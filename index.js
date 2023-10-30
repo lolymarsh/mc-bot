@@ -12,8 +12,6 @@ const {
   goals: { GoalNear, GoalGetToBlock },
 } = require("mineflayer-pathfinder");
 const Movements = require("mineflayer-pathfinder").Movements;
-const autoeat = require("mineflayer-auto-eat");
-
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 const commandbasic = require("./command/pathfinder");
@@ -37,10 +35,9 @@ const createBot = () => {
       auth: "offline", // microsoft || offline
     });
 
-    bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
     bot.loadPlugin(require("mineflayer-autoclicker"));
-    bot.loadPlugin(autoeat);
+    bot.setMaxListeners(20);
 
     bot.on("end", createBot, () => {
       io.emit("chat-error", message);
@@ -78,20 +75,20 @@ bot.on("resourcePack", async () => {
 // Search ResourcePack
 
 // AutoEat
-bot.once("spawn", () => {
-  bot.autoEat.options = {
-    priority: "foodPoints",
-    startAt: 14,
-    bannedFood: [],
-  };
-});
-bot.on("autoeat_started", () => {
-  console.log("Auto Eat started!");
-});
+// bot.once("spawn", () => {
+//   bot.autoEat.options = {
+//     priority: "foodPoints",
+//     startAt: 14,
+//     bannedFood: [],
+//   };
+// });
+// bot.on("autoeat_started", () => {
+//   console.log("Auto Eat started!");
+// });
 
-bot.on("autoeat_stopped", () => {
-  console.log("Auto Eat stopped!");
-});
+// bot.on("autoeat_stopped", () => {
+//   console.log("Auto Eat stopped!");
+// });
 // AutoEat
 
 // Search Window
@@ -617,3 +614,44 @@ app.post("/click-slot", async (req, res) => {
   }
 });
 // Click To Slot
+
+// setControlState
+app.post("/control-state", async (req, res) => {
+  const { control } = req.body;
+  try {
+    console.log(`Bot is running ${control}`);
+    await bot.setControlState(control, true);
+    io.emit("chat-bot", `บอทเดินค้างด้วยทิศทาง ${control}`);
+    return res.status(200).json({
+      message: "setControlState",
+      status: true,
+    });
+  } catch (err) {
+    console.log("setControlState", err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// setControlState
+
+// clearStateControl
+app.post("/control-clear", async (req, res) => {
+  try {
+    console.log(`Clear State Control`);
+    await bot.clearControlStates();
+    io.emit("chat-bot", `บอทถูกสั่งให้หยุดเดิน`);
+    return res.status(200).json({
+      message: "clearStateControl",
+      status: true,
+    });
+  } catch (err) {
+    console.log("clearStateControl", err);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// setControlState

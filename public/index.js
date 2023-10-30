@@ -363,6 +363,68 @@
           });
         }
       },
+      sendStateControl: async function (item) {
+        // console.log(item);
+        const self = this;
+        try {
+          self.is_pending = true;
+          await fetch(`${apiPath}control-state`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              control: item.state_control_value,
+            }),
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "สั่งบอทเคลื่อนที่สำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          self.is_pending = true;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
+      sendDisableStateControl: async function (item) {
+        const self = this;
+        try {
+          self.is_pending = true;
+          await fetch(`${apiPath}control-clear`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          self.is_pending = false;
+          return Swal.fire({
+            icon: "success",
+            title: "สั่งบอทหยุดเคลื่อนที่สำเร็จ",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          self.is_pending = true;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
       sendFacePosition: async function (item) {
         const self = this;
         try {
@@ -1530,6 +1592,136 @@
           });
         }
       },
+      showModalAddLoopFuncControlState(item, index) {
+        const self = this;
+
+        if (item) {
+          console.log(item);
+          Swal.fire({
+            title: "เดินค้าง",
+            html: `
+            <div class="swal-content">
+            <div class="form-group">
+                <label for="direction">เลือกทิศทาง</label>
+                <select id="state_control_value" value=${item.state_control_value} class="form-control">
+                    <option value="right">Right</option>
+                    <option value="left">Left</option>
+                    <option value="forward">Forward</option>
+                    <option value="back">Backward</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="direction">เปิดใช้งาน</label>
+                <select id="state_control_status" class="form-control" value=${item.state_control_status}>
+                    <option value="true">เปิด</option>
+                    <option value="false">ปิด</option>
+                </select>
+            </div>
+            <input id="delay_func" type="number" class="swal2-input" value=${item.delay_function} placeholder="ดีเลย์ขั้นต่ำ 100ms">
+        </div>
+        `,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const state_control_value = document.getElementById(
+                "state_control_value"
+              ).value;
+              const state_control_status = document.getElementById(
+                "state_control_status"
+              ).value;
+
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              let itemToGive = {};
+
+              if (state_control_status === true) {
+                itemToGive = {
+                  name_func: "StateControl",
+                  name_th: "เดินค้าง",
+                  state_control_status: state_control_status,
+                  state_control_value: state_control_value,
+                  delay_function: delay_function,
+                };
+              } else {
+                itemToGive = {
+                  name_func: "StateControl",
+                  name_th: "เดินค้าง",
+                  state_control_status: state_control_status,
+                  state_control_value: "",
+                  delay_function: delay_function,
+                };
+              }
+
+              self.editLoopfunctoLocal(itemToGive, index);
+              return;
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "เดินค้าง",
+            html: `
+            <div class="swal-content">
+            <div class="form-group">
+                <label for="direction">เลือกทิศทาง</label>
+                <select id="state_control_value" class="form-control" id="direction">
+                    <option value="right">Right</option>
+                    <option value="left">Left</option>
+                    <option value="forward">Forward</option>
+                    <option value="back">Backward</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="direction">เปิดใช้งาน</label>
+                <select id="state_control_status" class="form-control" id="direction">
+                    <option value="true">เปิด</option>
+                    <option value="false">ปิด</option>
+                </select>
+            </div>
+            <input id="delay_func" type="number" class="swal2-input" placeholder="ดีเลย์ขั้นต่ำ 100ms">
+        </div>
+        `,
+            showCancelButton: true,
+            confirmButtonText: "ตกลง",
+            cancelButtonText: "ยกเลิก",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const state_control_value = document.getElementById(
+                "state_control_value"
+              ).value;
+              const state_control_status = document.getElementById(
+                "state_control_status"
+              ).value;
+              const delay_function =
+                document.getElementById("delay_func").value;
+
+              let itemToGive = {};
+              if (state_control_status === true) {
+                itemToGive = {
+                  name_func: "StateControl",
+                  name_th: "เดินค้าง",
+                  state_control_status: state_control_status,
+                  state_control_value: state_control_value,
+                  delay_function: delay_function,
+                };
+              } else {
+                itemToGive = {
+                  name_func: "StateControl",
+                  name_th: "เดินค้าง",
+                  state_control_status: state_control_status,
+                  state_control_value: "",
+                  delay_function: delay_function,
+                };
+              }
+
+              self.addLoopfunctoLocal(itemToGive);
+              return;
+            }
+          });
+        }
+      },
       addLoopfunctoLocal(item) {
         const self = this;
 
@@ -1677,6 +1869,18 @@
         }
         // WatchAndBreak
 
+        // StateControl
+        if (item.name_func === "StateControl") {
+          self.loop_function.push({
+            name_func: item.name_func,
+            name_th: item.name_th,
+            state_control_status: item.state_control_status,
+            state_control_value: item.state_control_value,
+            delay_function: item.delay_function,
+          });
+        }
+        // StateControl
+
         localStorage.setItem(
           "loopFunctionStorage",
           JSON.stringify(self.loop_function)
@@ -1802,6 +2006,11 @@
           self.loop_function[index] = item;
         }
         // WatchAndBreak
+        // StateControl
+        if (item.name_func === "StateControl") {
+          self.loop_function[index] = item;
+        }
+        // StateControl
 
         localStorage.setItem(
           "loopFunctionStorage",
@@ -1859,6 +2068,25 @@
             return `บล็อคที่มอง ${item.name_block}`;
           }
           // WatchAndBreak
+          // StateControl
+          if (item.name_func === "StateControl") {
+            if (item.state_control_value === "right") {
+              return `เดินค้างไปทางขวา`;
+            }
+            if (item.state_control_value === "left") {
+              return `เดินค้างไปทางซ้าย`;
+            }
+            if (item.state_control_value === "forward") {
+              return `เดินค้างไปข้างหน้า`;
+            }
+            if (item.state_control_value === "back") {
+              return `เดินค้างไปข้างหลัง`;
+            }
+            if (item.state_control_value === "") {
+              return `หยุดเดินบอทค้าง`;
+            }
+          }
+          // StateControl
         } catch (error) {
           console.log(error);
         }
@@ -1916,6 +2144,21 @@
 
                 await self.SendWatchAndBreak(dataToSend);
                 await self.TimeSleep(item.delay_function);
+              }
+
+              if (item.name_func === "StateControl") {
+                if (item.state_control_value === "") {
+                  // console.log("eieiu");
+                  await self.sendDisableStateControl();
+                  await self.TimeSleep(item.delay_function);
+                } else {
+                  const dataToSend = {
+                    state_control_value: item.state_control_value,
+                  };
+
+                  await self.sendStateControl(dataToSend);
+                  await self.TimeSleep(item.delay_function);
+                }
               }
 
               if (item.name_func === "") {

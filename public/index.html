@@ -284,6 +284,13 @@
                 <i class="fa-solid fa-plus fa-lg"></i>
                 คลิกเพื่อเพิ่ม ดูและทำลาย
               </button>
+              <button
+                @click="showModalAddLoopFuncControlState()"
+                class="btn btn-success mt-2 mx-2"
+              >
+                <i class="fa-solid fa-plus fa-lg"></i>
+                คลิกเพื่อเพิ่ม Control State
+              </button>
             </div>
             <div>
               <table class="table table-striped draggable-zone">
@@ -348,6 +355,13 @@
                       <button
                         v-if="item.name_func === 'WatchAndBreak'"
                         @click="showModalAddLoopFuncWatchAndBreak(item, index)"
+                        class="btn btn-warning mx-2"
+                      >
+                        แก้ไข
+                      </button>
+                      <button
+                        v-if="item.name_func === 'StateControl'"
+                        @click="showModalAddLoopFuncControlState(item, index)"
                         class="btn btn-warning mx-2"
                       >
                         แก้ไข
