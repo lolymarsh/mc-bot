@@ -12,6 +12,7 @@ const {
   goals: { GoalNear, GoalGetToBlock },
 } = require("mineflayer-pathfinder");
 const Movements = require("mineflayer-pathfinder").Movements;
+const autoeat = require("mineflayer-auto-eat");
 
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
@@ -39,6 +40,7 @@ const createBot = () => {
     bot.setMaxListeners(20);
     bot.loadPlugin(pathfinder);
     bot.loadPlugin(require("mineflayer-autoclicker"));
+    bot.loadPlugin(autoeat);
 
     bot.on("end", createBot, () => {
       io.emit("chat-error", message);
@@ -74,6 +76,23 @@ bot.on("resourcePack", async () => {
   }
 });
 // Search ResourcePack
+
+// AutoEat
+bot.once("spawn", () => {
+  bot.autoEat.options = {
+    priority: "foodPoints",
+    startAt: 14,
+    bannedFood: [],
+  };
+});
+bot.on("autoeat_started", () => {
+  console.log("Auto Eat started!");
+});
+
+bot.on("autoeat_stopped", () => {
+  console.log("Auto Eat stopped!");
+});
+// AutoEat
 
 // Search Window
 bot.on("windowOpen", async (window) => {
