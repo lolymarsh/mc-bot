@@ -20,7 +20,6 @@
 ## รันขึ้นเว็บ
 
 ```bash
-cd botmcjs
 node index.js
 ```
 จากนั้นเข้าตาม PORT_SERVER เช่น http://localhost:3000/
