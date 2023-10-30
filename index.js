@@ -249,6 +249,29 @@ app.post("/get-data", (req, res) => {
 });
 // Sent data to client
 
+// Logout
+app.post("/logout", (req, res) => {
+  try {
+    bot.quit();
+
+    bot = null;
+    username_eiei = "";
+    server_address_eiei = "";
+
+    return res.status(200).json({
+      message: "Logut",
+      status: true,
+    });
+  } catch (error) {
+    console.log("Logut", error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Logout
+
 // FarmPumpkin
 let isFarmPumpkinEnabled = false;
 app.post("/farm-pumpkin", (req, res) => {

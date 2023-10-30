@@ -2363,6 +2363,31 @@
 
         self.window_items = [];
       },
+      logoutServer: async function () {
+        const self = this;
+        try {
+          self.is_pending = true;
+          await fetch(`${apiPath}logout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          window.location = "/";
+
+          self.is_pending = false;
+        } catch (error) {
+          self.is_pending = false;
+          console.log(error);
+          return Swal.fire({
+            icon: "error",
+            title: "เกิดข้อผิดพลาด",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      },
       TestClick: async function () {
         const self = this;
 
