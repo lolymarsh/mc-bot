@@ -1596,7 +1596,7 @@
         const self = this;
 
         if (item) {
-          console.log(item);
+          // console.log(item);
           Swal.fire({
             title: "เดินค้าง",
             html: `
@@ -1637,7 +1637,7 @@
 
               let itemToGive = {};
 
-              if (state_control_status === true) {
+              if (state_control_status === "true") {
                 itemToGive = {
                   name_func: "StateControl",
                   name_th: "เดินค้าง",
@@ -1688,17 +1688,20 @@
             cancelButtonText: "ยกเลิก",
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const state_control_value = document.getElementById(
+              const state_control_value = await document.getElementById(
                 "state_control_value"
               ).value;
-              const state_control_status = document.getElementById(
+              const state_control_status = await document.getElementById(
                 "state_control_status"
               ).value;
               const delay_function =
                 document.getElementById("delay_func").value;
 
+              console.log(state_control_status);
+
               let itemToGive = {};
-              if (state_control_status === true) {
+              if (state_control_status === "true") {
+                console.log("eeee");
                 itemToGive = {
                   name_func: "StateControl",
                   name_th: "เดินค้าง",
