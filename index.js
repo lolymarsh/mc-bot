@@ -113,10 +113,14 @@ app.post("/create-bot", async (req, res) => {
     // Search ResourcePack
 
     // Drop item
-    // setInterval(() => {
-    //   checkAndThrowItems("bamboo", 500);
-    //   checkAndThrowItems("sugar_cane", 500);
-    // }, 5000); // delay 5 sec
+
+    if (bot !== null) {
+      setInterval(() => {
+        checkAndThrowItems("bamboo", 512);
+        checkAndThrowItems("sugar_cane", 512);
+      }, 5000); // delay 5 sec
+    }
+
     // Drop item
 
     // AutoEat
@@ -194,7 +198,7 @@ const checkAndThrowItems = async (itemName, amount) => {
       async function processItems() {
         for (let i = 0; i < itemsWithMatchingName.length; i++) {
           bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // delay 1000 ms
+          await new Promise((resolve) => setTimeout(resolve, 100)); // delay 100 ms
         }
         return io.emit("chat-bot", `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`);
       }
