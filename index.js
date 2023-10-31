@@ -2,13 +2,13 @@ const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
 const app = express();
-const portServer = process.env.PORT_SERVER || 3000;
+const portServer = 3000;
 const server = http.createServer(app);
 const io = socketIO(server);
 const mineflayer = require("mineflayer");
 const {
   pathfinder,
-  goals: { GoalNear, GoalGetToBlock },
+  goals: { GoalGetToBlock },
 } = require("mineflayer-pathfinder");
 const Movements = require("mineflayer-pathfinder").Movements;
 const autofarm = require("./command/autofarm");
@@ -50,7 +50,7 @@ let username_eiei = "";
 // };
 
 // CreateBot
-app.post("/create-bot", (req, res) => {
+app.post("/create-bot", async (req, res) => {
   try {
     const { server_address, username } = req.body;
 
@@ -74,7 +74,8 @@ app.post("/create-bot", (req, res) => {
       host: server_address_eiei,
       username: username_eiei,
       // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
-      auth: "offline", // microsoft || offline
+      auth: "offline", // microsoft || offline\
+      version: "1.20",
     });
 
     io.emit("chat-bot", "สร้างบอทสำเร็จ");
@@ -110,6 +111,13 @@ app.post("/create-bot", (req, res) => {
       }
     });
     // Search ResourcePack
+
+    // Drop item
+    // setInterval(() => {
+    //   checkAndThrowItems("bamboo", 500);
+    //   checkAndThrowItems("sugar_cane", 500);
+    // }, 5000); // delay 5 sec
+    // Drop item
 
     // AutoEat
     // bot.once("spawn", () => {
@@ -147,67 +155,11 @@ app.post("/create-bot", (req, res) => {
     });
     // Search Window
 
-    // Drop Item Auto
-    setInterval(() => {
-      checkAndThrowItems("bamboo", 500);
-      checkAndThrowItems("sugar_cane", 500);
-    }, 5000); // delay 15 sec
-    const checkAndThrowItems = async (itemName, amount) => {
-      try {
-        const inventory = bot.inventory;
-        // const items = inventory.items();
-
-        // const totalItemCount = await items
-        //   .map((itemStack) => itemStack.count)
-        //   .reduce((acc, count) => acc + count, 0);
-
-        const itemsWithMatchingName = await inventory
-          .items()
-          .filter((itemStack) => itemStack.name === itemName);
-        const itemCount = await countItemsByName(inventory, itemName);
-
-        // console.log(amount);
-        // console.log(itemsWithMatchingName);
-        // console.log(totalItemCount);
-
-        // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
-
-        if (itemCount >= amount) {
-          io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
-          async function processItems() {
-            for (let i = 0; i < itemsWithMatchingName.length; i++) {
-              bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
-              await new Promise((resolve) => setTimeout(resolve, 100)); // delay 1 sec
-            }
-            return io.emit(
-              "chat-bot",
-              `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`
-            );
-          }
-
-          processItems();
-        }
-      } catch (error) {
-        return console.log("checkAndThrowItems", error);
-      }
-    };
-    const countItemsByName = async (inventory, itemName) => {
-      const itemsWithMatchingName = await inventory
-        .items()
-        .filter((itemStack) => itemStack.name === itemName);
-      const itemCount = await itemsWithMatchingName.reduce(
-        (acc, itemStack) => acc + itemStack.count,
-        0
-      );
-      return itemCount;
-    };
-    // Drop Item Auto
-
     return res.status(200).json({
       message: "Create Bot Success",
     });
   } catch (error) {
-    console.log("Drop Item Auto", error);
+    console.log("CreateBot", error);
     return res.status(400).json({
       message: "Error",
       status: false,
@@ -215,6 +167,55 @@ app.post("/create-bot", (req, res) => {
   }
 });
 // CreateBot
+
+// Drop Item Auto
+const checkAndThrowItems = async (itemName, amount) => {
+  try {
+    const inventory = bot.inventory;
+    // const items = inventory.items();
+
+    // const totalItemCount = await items
+    //   .map((itemStack) => itemStack.count)
+    //   .reduce((acc, count) => acc + count, 0);
+
+    const itemsWithMatchingName = await inventory
+      .items()
+      .filter((itemStack) => itemStack.name === itemName);
+    const itemCount = await countItemsByName(inventory, itemName);
+
+    // console.log(amount);
+    // console.log(itemsWithMatchingName);
+    // console.log(totalItemCount);
+
+    // bot.toss(bot.registry.itemsByName[itemName].id, null, count);
+
+    if (itemCount >= amount) {
+      io.emit("chat-bot", `กำลังเริ่มโยนไอเทม ${itemName} จำนวน ${amount}`);
+      async function processItems() {
+        for (let i = 0; i < itemsWithMatchingName.length; i++) {
+          bot.toss(bot.registry.itemsByName[itemName].id, null, 64);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // delay 1000 ms
+        }
+        return io.emit("chat-bot", `โยน ${itemName} จำนวน ${amount} เสร็จสิ้น`);
+      }
+
+      processItems();
+    }
+  } catch (error) {
+    return console.log("checkAndThrowItems", error);
+  }
+};
+const countItemsByName = async (inventory, itemName) => {
+  const itemsWithMatchingName = await inventory
+    .items()
+    .filter((itemStack) => itemStack.name === itemName);
+  const itemCount = await itemsWithMatchingName.reduce(
+    (acc, itemStack) => acc + itemStack.count,
+    0
+  );
+  return itemCount;
+};
+// Drop Item Auto
 
 // Sent data to client
 app.post("/get-data", (req, res) => {
@@ -225,7 +226,7 @@ app.post("/get-data", (req, res) => {
         status: false,
       });
     } else {
-      if (username_eiei | (server_address_eiei == "")) {
+      if (username_eiei == "" || server_address_eiei == "") {
         return res.status(400).json({
           message: "Error",
           status: false,
