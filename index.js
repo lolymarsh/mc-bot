@@ -647,7 +647,7 @@ app.post("/watch-item-and-break", async (req, res) => {
     while (true) {
       const targetBlock = bot.findBlock({
         matching: ids,
-        maxDistance: 2,
+        maxDistance: 3,
       });
       await bot.pathfinder.setMovements(defaultMove);
       await bot.pathfinder.setGoal(
@@ -658,7 +658,7 @@ app.post("/watch-item-and-break", async (req, res) => {
         )
       );
 
-      var min = 100;
+      var min = 250;
       var max = 500;
 
       var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
