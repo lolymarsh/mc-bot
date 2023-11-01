@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
 const app = express();
-const portServer = 3005;
 const server = http.createServer(app);
 const io = socketIO(server);
 const mineflayer = require("mineflayer");
@@ -11,10 +10,15 @@ const {
   goals: { GoalGetToBlock },
 } = require("mineflayer-pathfinder");
 const Movements = require("mineflayer-pathfinder").Movements;
+const { app: appElectron, BrowserWindow } = require("electron");
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 const commandbasic = require("./command/pathfinder");
 const utils = require("./utils/utils");
+let portServer = 3005;
+let bot = null;
+let server_address_eiei = "";
+let username_eiei = "";
 
 server.listen(portServer, () => {
   console.log(`listening on *:${portServer}`);
@@ -23,17 +27,11 @@ server.listen(portServer, () => {
 app.use(express.json());
 app.use(express.static("public"));
 
-let bot = null;
-let server_address_eiei = "";
-let username_eiei = "";
-
-const { app: appElectron, BrowserWindow } = require("electron");
-
 appElectron.on("ready", () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: false, // ปิดแถบเรื่อง
+    frame: true, // ปิดแถบเรื่อง
     autoHideMenuBar: true, // ซ่อนเมนู
   });
 
@@ -650,10 +648,10 @@ app.post("/watch-item-and-break", async (req, res) => {
         )
       );
 
-      var min = 100;
-      var max = 250;
+      let min = 100;
+      let max = 250;
 
-      var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+      let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
       await utils.TimeSleep(randomNumber);
 
@@ -743,26 +741,3 @@ app.post("/control-clear", async (req, res) => {
   }
 });
 // clearStateControl
-
-// ToggleDig
-// app.post("/toggle-dig", async (req, res) => {
-//   try {
-//     const targetBlock = bot.blockAtCursor();
-//     bot.dig(targetBlock, () => {
-//       console.log("บล็อกถูกขุดแล้ว");
-//     });
-
-//     io.emit("chat-bot", `บอทสั่ง`);
-//     return res.status(200).json({
-//       message: "ToggleDig",
-//       status: true,
-//     });
-//   } catch (err) {
-//     console.log("ToggleDig", err);
-//     return res.status(400).json({
-//       message: "Error",
-//       status: false,
-//     });
-//   }
-// });
-// ToggleDig
