@@ -20,6 +20,12 @@ let bot = null;
 let server_address_eiei = "";
 let username_eiei = "";
 
+server.once("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    portServer++;
+  }
+});
+
 server.listen(portServer, () => {
   console.log(`listening on *:${portServer}`);
 });
