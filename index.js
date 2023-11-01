@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
 const app = express();
-const portServer = 3000;
+const portServer = 3005;
 const server = http.createServer(app);
 const io = socketIO(server);
 const mineflayer = require("mineflayer");
@@ -27,27 +27,19 @@ let bot = null;
 let server_address_eiei = "";
 let username_eiei = "";
 
-// const createBot = () => {
-//   try {
-//     bot = mineflayer.createBot({
-//       host: process.env.HOST_SERVER,
-//       username: process.env.BOT_NAME,
-//       // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
-//       auth: "offline", // microsoft || offline
-//     });
+const { app: appElectron, BrowserWindow } = require("electron");
 
-//     bot.loadPlugin(pathfinder);
-//     bot.loadPlugin(require("mineflayer-autoclicker"));
-//     bot.setMaxListeners(20);
+appElectron.on("ready", () => {
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    frame: false, // ปิดแถบเรื่อง
+    autoHideMenuBar: true, // ซ่อนเมนู
+  });
 
-//     bot.on("end", createBot, () => {
-//       io.emit("chat-error", message);
-//     });
-//     return bot;
-//   } catch (error) {
-//     return console.log("createBot", error);
-//   }
-// };
+  // โหลดหน้าเว็บหลักของคุณ
+  mainWindow.loadURL(`http://localhost:${portServer}`);
+});
 
 // CreateBot
 app.post("/create-bot", async (req, res) => {
@@ -658,8 +650,8 @@ app.post("/watch-item-and-break", async (req, res) => {
         )
       );
 
-      var min = 250;
-      var max = 500;
+      var min = 100;
+      var max = 250;
 
       var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 

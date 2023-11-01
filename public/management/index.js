@@ -51,6 +51,8 @@
           chatMessage.classList.add("text-light");
           chatMessage.textContent = message; // ใช้ textContent เพื่อแสดงข้อความเท่านั้น
           chatBox.appendChild(chatMessage);
+
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
 
         // Chat Bot
@@ -60,6 +62,8 @@
           chatMessage.classList.add("text-info");
           chatMessage.textContent = message;
           chatBox.appendChild(chatMessage);
+
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
 
         socket.on("chat-error", (message) => {
@@ -67,6 +71,8 @@
           const chatMessage = document.createElement("p");
           chatMessage.textContent = message;
           chatBox.appendChild(chatMessage);
+
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
 
         socket.on("chat-bot-enable", (message) => {
@@ -75,6 +81,8 @@
           chatMessage.classList.add("text-success");
           chatMessage.textContent = message;
           chatBox.appendChild(chatMessage);
+
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
 
         socket.on("chat-bot-disable", (message) => {
@@ -83,6 +91,8 @@
           chatMessage.classList.add("text-warning");
           chatMessage.textContent = message;
           chatBox.appendChild(chatMessage);
+
+          chatBox.scrollTop = chatBox.scrollHeight;
         });
         // Chat Bot
 
@@ -92,6 +102,8 @@
           chatMessageFarmPumpkin.textContent = message;
           chatMessageFarmPumpkin.classList.add("text-warning");
           chatFarmPumpkin.appendChild(chatMessageFarmPumpkin);
+
+          chatFarmPumpkin.scrollTop = chatFarmPumpkin.scrollHeight;
         });
 
         socket.on("chat-farm-wheat", (message) => {
@@ -100,6 +112,8 @@
           chatMessageFarmWheat.textContent = message;
           chatMessageFarmWheat.classList.add("text-warning");
           chatFarmWheat.appendChild(chatMessageFarmWheat);
+
+          chatFarmWheat.scrollTop = chatFarmWheat.scrollHeight;
         });
 
         socket.on("window-opened", (message) => {
