@@ -10,7 +10,7 @@ const {
   goals: { GoalGetToBlock },
 } = require("mineflayer-pathfinder");
 const Movements = require("mineflayer-pathfinder").Movements;
-const { app: appElectron, BrowserWindow } = require("electron");
+// const { app: appElectron, BrowserWindow } = require("electron");
 const autofarm = require("./command/autofarm");
 const basiccommand = require("./command/basic");
 const commandbasic = require("./command/pathfinder");
@@ -33,17 +33,17 @@ server.listen(portServer, () => {
 app.use(express.json());
 app.use(express.static("public"));
 
-appElectron.on("ready", () => {
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    frame: true, // ปิดแถบเรื่อง
-    autoHideMenuBar: true, // ซ่อนเมนู
-  });
+// appElectron.on("ready", () => {
+//   const mainWindow = new BrowserWindow({
+//     width: 800,
+//     height: 600,
+//     frame: true, // ปิดแถบเรื่อง
+//     autoHideMenuBar: true, // ซ่อนเมนู
+//   });
 
-  // โหลดหน้าเว็บหลักของคุณ
-  mainWindow.loadURL(`http://localhost:${portServer}`);
-});
+//   // โหลดหน้าเว็บหลักของคุณ
+//   mainWindow.loadURL(`http://localhost:${portServer}`);
+// });
 
 // CreateBot
 app.post("/create-bot", async (req, res) => {
@@ -654,8 +654,8 @@ app.post("/watch-item-and-break", async (req, res) => {
         )
       );
 
-      let min = 100;
-      let max = 250;
+      let min = 150;
+      let max = 300;
 
       let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 

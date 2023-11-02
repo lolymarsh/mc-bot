@@ -1,205 +1,239 @@
 [
     {
+        "name_func": "sendCommand",
+        "name_th": "ส่งคำสั่งหรือส่งแชท",
+        "message": "/home",
+        "delay_function": "5000"
+    },
+    {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-388",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9970",
-        "delay_function": "10000"
+        "z_pos": "-9969.674",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9967",
-        "delay_function": "10000"
+        "z_pos": "-9966.401",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9961",
-        "delay_function": "10000"
+        "z_pos": "-9961.484",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9958",
-        "delay_function": "10000"
+        "z_pos": "-9957.430",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9952",
-        "delay_function": "10000"
+        "z_pos": "-9961.479",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9949",
-        "delay_function": "10000"
+        "z_pos": "-9957.510",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9943",
-        "delay_function": "10000"
+        "z_pos": "-9952.387",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9940",
-        "delay_function": "10000"
+        "z_pos": "-9948.231",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9934",
-        "delay_function": "10000"
+        "z_pos": "-9943.531",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9931",
-        "delay_function": "10000"
+        "z_pos": "-9939.418",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9925",
-        "delay_function": "10000"
+        "z_pos": "-9934.420",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9922",
-        "delay_function": "10000"
+        "z_pos": "-9930.413",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-389",
+        "x_pos": "-388.300",
         "y_pos": "108",
-        "z_pos": "-9916",
-        "delay_function": "10000"
+        "z_pos": "-9925.526",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
         "name_th": "ส่งตำแหน่งให้บอทเดิน",
-        "x_pos": "-265",
+        "x_pos": "267.700",
         "y_pos": "108",
-        "z_pos": "-9913",
-        "delay_function": "10000"
+        "z_pos": "-9921.476",
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
+    },
+    {
+        "name_func": "sendPosition",
+        "name_th": "ส่งตำแหน่งให้บอทเดิน",
+        "x_pos": "-388.300",
+        "y_pos": "108",
+        "z_pos": "-9916.342",
+        "delay_function": "60000"
+    },
+    {
+        "name_func": "WatchAndBreak",
+        "name_th": "ดูและทำลาย",
+        "name_block": "pumpkin",
+        "delay_function": "5000"
+    },
+    {
+        "name_func": "sendPosition",
+        "name_th": "ส่งตำแหน่งให้บอทเดิน",
+        "x_pos": "267.700",
+        "y_pos": "108",
+        "z_pos": "-9912.350",
+        "delay_function": "60000"
+    },
+    {
+        "name_func": "WatchAndBreak",
+        "name_th": "ดูและทำลาย",
+        "name_block": "pumpkin",
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -207,13 +241,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9907",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -221,13 +255,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9904",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -235,13 +269,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9898",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -249,13 +283,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9895",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -263,13 +297,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9889",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -277,13 +311,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9886",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -291,13 +325,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9880",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -305,13 +339,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9877",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -319,13 +353,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9871",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -333,13 +367,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9868",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -347,13 +381,13 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9862",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -361,13 +395,13 @@
         "x_pos": "-265",
         "y_pos": "108",
         "z_pos": "-9859",
-        "delay_function": "10000"
+        "delay_function": "60000"
     },
     {
         "name_func": "WatchAndBreak",
         "name_th": "ดูและทำลาย",
         "name_block": "pumpkin",
-        "delay_function": "10000"
+        "delay_function": "5000"
     },
     {
         "name_func": "sendPosition",
@@ -375,6 +409,12 @@
         "x_pos": "-389",
         "y_pos": "108",
         "z_pos": "-9853",
-        "delay_function": "10000"
+        "delay_function": "60000"
+    },
+    {
+        "name_func": "WatchAndBreak",
+        "name_th": "ดูและทำลาย",
+        "name_block": "pumpkin",
+        "delay_function": "5000"
     }
 ]
