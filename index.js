@@ -58,10 +58,13 @@ app.post("/create-bot", async (req, res) => {
       username: username_eiei,
       // port: process.env.PORT_SERVER_MC || "", // เปิดถ้ามี port
       auth: "offline", // microsoft || offline\
-      version: "1.20",
+      version: "1.20.2",
     });
 
-    io.emit("chat-bot", "สร้างบอทสำเร็จ");
+    bot.on("login", () => {
+      io.emit("chat-bot", "สร้างบอทสำเร็จ");
+      console.log("สร้างบอทสำเร็จ");
+    });
 
     bot.loadPlugin(pathfinder);
     bot.loadPlugin(require("mineflayer-autoclicker"));
@@ -144,6 +147,7 @@ app.post("/create-bot", async (req, res) => {
 
     return res.status(200).json({
       message: "Create Bot Success",
+      status: true,
     });
   } catch (error) {
     console.log("CreateBot", error);
@@ -204,38 +208,48 @@ const countItemsByName = async (inventory, itemName) => {
 };
 // Drop Item Auto
 
-// Sent data to client
-app.post("/get-data", (req, res) => {
+// LookNPC
+app.post("/look-npc", (req, res) => {
   try {
-    if (bot === null) {
-      return res.status(400).json({
-        message: "Data From Server",
-        status: false,
-      });
-    } else {
-      if (username_eiei == "" || server_address_eiei == "") {
-        return res.status(400).json({
-          message: "Error",
-          status: false,
-        });
-      }
+    const { npcName } = req.body;
+
+    // ค้นหา NPC โดยชื่อ
+    const npc = bot.nearestEntity((entity) => entity.username === npcName);
+
+    if (npc) {
+      // const npcJsonString = JSON.stringify(npc);
+      // console.log(`NPC JSON: ${npcJsonString}`);
+      // console.log(`Found NPC: ${npcName}`);
+      console.log(
+        `NPC Position: X: ${npc.position.x}, Y: ${npc.position.y}, Z: ${npc.position.z}`
+      );
+
+      // มองที่ NPC
+      bot.lookAt(npc.position.offset(0, npc.height, 0));
+
+      utils.TimeSleep(300);
+      bot.attack(npc);
 
       return res.status(200).json({
-        message: "Data From Server",
+        message: "LookNPC",
         status: true,
-        username: username_eiei,
-        serveraddress: server_address_eiei,
+      });
+    } else {
+      console.log(`NPC ${npcName} not found.`);
+      return res.status(200).json({
+        message: "NPC not found",
+        status: false,
       });
     }
   } catch (error) {
-    console.log("Drop Item Auto", error);
-    return res.status(400).json({
+    console.log("LookNPC", error);
+    return res.status(500).json({
       message: "Error",
       status: false,
     });
   }
 });
-// Sent data to client
+// LookNPC
 
 // Logout
 app.post("/logout", (req, res) => {
@@ -734,3 +748,36 @@ app.post("/control-clear", async (req, res) => {
   }
 });
 // clearStateControl
+
+// Sent data to client
+app.post("/get-data", (req, res) => {
+  try {
+    if (bot === null) {
+      return res.status(400).json({
+        message: "Data From Server",
+        status: false,
+      });
+    } else {
+      if (username_eiei == "" || server_address_eiei == "") {
+        return res.status(400).json({
+          message: "Error",
+          status: false,
+        });
+      }
+
+      return res.status(200).json({
+        message: "Data From Server",
+        status: true,
+        username: username_eiei,
+        serveraddress: server_address_eiei,
+      });
+    }
+  } catch (error) {
+    console.log("Drop Item Auto", error);
+    return res.status(400).json({
+      message: "Error",
+      status: false,
+    });
+  }
+});
+// Sent data to client
